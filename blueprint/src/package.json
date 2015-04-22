@@ -1,0 +1,14 @@
+{
+  "name": "MyCoolService",
+  "version": "0.0.1",
+  "description": "About My Service",
+  "author": "",
+  "dependencies": {
+    "glad" : "0.0.1",
+    "mocha" : "2.2.1",
+    "should": "^5.2.0"
+  },
+  "scripts" : {
+    "test" : "node_modules/.bin/mocha tests"
+  }
+}
