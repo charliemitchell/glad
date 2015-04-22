@@ -1,7 +1,7 @@
 var path = require('path'),
     join = path.join,
     fs = require('fs'),
-    ncp = require('ncp'),
+    copy = require('ncp'),
     blueprint = path.resolve((__dirname).replace('bin/lib', ""), 'blueprint'),
     template = (__dirname).replace('lib', 'template'),
     glad,
@@ -138,7 +138,7 @@ module.exports = function (argv) {
             });
 
         } else {
-            ncp(blueprint, cwd, function(err) {
+            copy(blueprint, cwd, function(err) {
 
                 fs.writeFileSync('./src/models/' + model + '.js', fs.readFileSync(join(template, 'model.js'), 'utf-8').replace(/{{model}}/g, model));
                 fs.writeFileSync('./src/routes/' + model + '.js', fs.readFileSync(join(template, 'route.js'), 'utf-8').replace(/{{api}}/g, model));
@@ -196,9 +196,6 @@ module.exports = function (argv) {
 
             });
         }
-
-
-
         
     } else {
         console.log("You need to choose a name for the api you wish to generate");

@@ -1,32 +1,29 @@
 
-# NIMBLE-API
-##### Currently this project is under heavy development...
-Expect there to be a bit of version-itus until v1.0.0
+# GLAD
 
 ## Required
 * [Node.js](http://nodejs.org/) (with NPM)
-* [Mongo DB](http://mongodb.org/)
 
 
 ## Optional
 * [Redis](http://redis.io/) (No longer a requirement unless you are using a session)
-
+* [Mongo DB](http://mongodb.org/)
 
 ## Installation
 
-* `(sudo) npm install -g nimbleapi`
+* `(sudo) npm install -g glad`
 
 ## Running / Development
 
-*  to create a new nimble server
- * Create a Folder Named foo: `nimble-api new foo` OR  `mkdir foo`
+*  to create a new glad server
+ * Create a Folder Named foo: `glad new foo` OR  `mkdir foo`
  * Go Inside the folder: `cd foo`
- * Generate a Service that listens to the route bar: `nimble-api api bar && cd src`
- * Start The Server: `nimble-api s` Or run the tests `npm test`
+ * Generate an endpoint for the route bar: `glad api bar && cd src`
+ * Start The Server: `glad s` Or run the tests `npm test`
 * Visit your app at [http://localhost:4242/bar](http://localhost:4242/bar).
 
 ## Some Built In Validations
-Nimble comes packaged with some built in validations for your model. We use Google's Caja (the sanitize package) as the default sanitizer, furthermore we have built in some really nice features around the mongoose setter. So far we have provided some common transformations.
+Glad comes packaged with some built in validations for your model. We use Google's Caja (the sanitize package) as the default sanitizer, furthermore we have built in some really nice features around the mongoose setter. So far we have provided some common transformations.
 * sentence case
  * lor ipsom. dol amore. --> Lor ipsom. Dol amore. 
 * lower case
@@ -113,13 +110,13 @@ module.exports = {
 The Hooks File Provides hooks that fire while your server is being constructed. You can acess the app object as well as the express object using these hooks. This way if you need to extend the app object before or after a specific "app.use" you can do this here. The hooks object will fire sequentially from top to bottom so it makes it easy to figure out in what order the app is being configured, as well as at what point you would like to extend the app object.
 
 ## Routing
-Routing is centered around REST. In the routes.js file you will see the routes object. It is organized by request method. this will eventually make it's way to the express router.
+Routing is centered around REST. In the routes folder file you will find your routes. The routes object is organized by request method. this will eventually make it's way to the express router.
 ```js
 module.exports = {
     GET: [{
-        path: '/users',
-        action: 'getUserList',
-        policy: 'authenticated'
+        path: '/users',         // <--- what url does this entry match
+        action: 'getUserList',  // <--- what controller method should handle this request
+        policy: 'authenticated' // <--- what poily applies to this route
     },{
         path: '/users/:id',
         action: 'getUserById',
@@ -152,25 +149,25 @@ As you can see you have an array of Get, Post, Put, Delete methods. the combinat
 * policy : the policy method to call in order to determine if the action is allowed. * see policies.js
 
 
-### Nimble Service Exposes any of it's dependencies to you via the nimbleservice object.
-This way we don't need to have duplicate dependencies.
+### Glad Exposes any of it's dependencies to you via the gladservice object.
 ```
-    require('nimbleservice').mongoose  // <-- the mongoose ODM
-    require('nimbleservice').colors    // <-- colors for your logs
-    require('nimbleservice').lodash    // <-- similar to underscore, with a few enhancements
-    require('nimbleservice').express   // <-- express js
-    require('nimbleservice').promise   // <-- bluebird (async awesomeness)
-    require('nimbleservice').moment    // <-- awesome date library
+    require('glad').mongoose  // <-- the mongoose ODM
+    require('glad').colors    // <-- colors for your logs
+    require('glad').lodash    // <-- similar to underscore, with a few enhancements
+    require('glad').express   // <-- express js
+    require('glad').promise   // <-- bluebird (async awesomeness)
+    require('glad').moment    // <-- awesome date library
 ```
 
 ## Docker
-If you are using docker, nimble will automatically generate a Dockerfile for you. If Not, Just ignore it.
+If you are using docker, glad will automatically generate a Dockerfile for you. If Not, Just ignore it.
 ## Vagrant
-Nimble will auto generate a Vagrant file with Ubuntu as part of the default blueprint. It also includes a bootstrap.sh file that will run when Vagrant Creates your VM. By Default it installs docker.
-## Stubs (Blueprinting)
-With Nimble you can create stubs and generate new services based on any template you would like. The templating is very straight forward. See the blueprints folder to see what a blueprint looks like.
+Glad will auto generate a Vagrant file with Ubuntu as part of the default blueprint. It also includes a bootstrap.sh file that will run when Vagrant Creates your VM. By Default it installs docker.
+
+## Stubs (Blueprinting) *NOT READY QUITE YET
+With Glad you can create stubs and generate new services based on any template you would like. The templating is very straight forward. See the blueprints folder to see what a blueprint looks like.
 * To Generate a service from a blueprint
-* `nimble stub /path/to/stub/ --model users`
+* `glad stub /path/to/stub/ --model users`
 
 This will (recursively) copy all files from the path given to the current working directory, and fill in all of the template variables with the name of the model given.
 
@@ -178,14 +175,14 @@ This will (recursively) copy all files from the path given to the current workin
 Some basic tests are written for you, any route that you define in the router will be tested when running npm test. You should run your tests from the src directory.
 
 ## Additional Commands
-`nimble set port 1234` will change the port to 1234 in your config file, (and your dockerfile if you have one). (you can pass in any number for your port)
+`glad set port 1234` will change the port to 1234 in your config file, (and your dockerfile if you have one). (you can pass in any number for your port)
 
-`nimble-api p --editor=subl` will set the default editor for your projects to sublime. (This should be the bash command used to open your editor) (in bash: subl .)
+`glad p --editor=subl` will set the default editor for your projects to sublime. (This should be the bash command used to open your editor) (in bash: subl .)
 
-`nimble-api p --editor=atom` will set the default editor for your projects to atom (provided that atom's binary is symlinked). (This should be the bash command used to open your editor) (in bash: atom .)
+`glad p --editor=atom` will set the default editor for your projects to atom (provided that atom's binary is symlinked). (This should be the bash command used to open your editor) (in bash: atom .)
 
 ## Common Mistakes
 You must use a Content-Type header in your request, otherwise the body will never get parsed. (Talking to you POSTMAN people who forget to use headers)
 
 ## GITHUB
-* [nimbleservice](https://www.github.com/charliemitchell/nimble) 
+* [glad](https://www.github.com/charliemitchell/glad) 
