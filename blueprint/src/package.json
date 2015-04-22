@@ -4,7 +4,7 @@
   "description": "About My Service",
   "author": "",
   "dependencies": {
-    "glad" : "0.0.1",
+    "glad" : "0.1.1",
     "mocha" : "2.2.1",
     "should": "^5.2.0"
   },
