@@ -37,30 +37,39 @@ Glad comes packaged with some built in validations for your model. We use Google
 * sanitize
 
 ## Mimimal setup required...
-### Open your config file...
+### Open your config file... (Already set up to defaults)
 ```js
-    module.exports = {
-            
-        port : 4242,  // <--------- What port should this service handle
-        
-        redis : {
-          host: 'localhost',
-          port: 6379,
-          key : 'sess:' // <-------- Change this to match your session key in redis
-        },
+    //....
 
-        cookie : {
-          name : 'yourcookie.sid',  // <---- Change this to match your cookie name
-        },
-        
-        mongodb : {
-            host : 'localhost',
-            port : 27017,
-            database : 'yourdatabase' // <-- CHANGE THIS to match your database
-        }
+    port : 4242, //<--- Choose a Port (Defaults 4242) 
 
-        // etc...
+    sessionless : false, //<--- Set True if you don't want to use a session
+
+    verbose : false, //<--- Level of logging
+    
+    // ...
+    
+    bodyParser : 'json', // What Kind of API is this 
+
+    redis : {
+      host: localhost,
+      port: 6379
+      key : 'sess:' // <---- Your Session Key
+    },
+
+    cookie : {
+      name : 'yourcookie.id', //<--- Your Cookie Name
+      secret: 'Your session secret' // <---- Your Session Secret
+    },
+
+    // MongoDB (Just Remove this entire key if you would like to run without mongo DB)
+    mongodb : {
+        host : localhost,
+        port : 27017,
+        database : 'yourdatabase'
     }
+    
+    // etc..
 ```
 
 ### Now Open Up your Model File 
@@ -149,14 +158,38 @@ As you can see you have an array of Get, Post, Put, Delete methods. the combinat
 * policy : the policy method to call in order to determine if the action is allowed. * see policies.js
 
 
-### Glad Exposes any of it's dependencies to you via the gladservice object.
-```
+### Glad Exposes any of it's dependencies or tools to you via the glad object.
+```js
     require('glad').mongoose  // <-- the mongoose ODM
     require('glad').colors    // <-- colors for your logs
     require('glad').lodash    // <-- similar to underscore, with a few enhancements
     require('glad').express   // <-- express js
     require('glad').promise   // <-- bluebird (async awesomeness)
     require('glad').moment    // <-- awesome date library
+    require('glad').utility   // <-- utility class
+```
+
+### The Utility Class
+For now, there are a few utility methods. I'll work on rollling out much more, soon. I take requests!
+```js
+    var utility = require('glad').utility,
+        object = utility.object;
+
+    var foo = {
+        a: "a",
+        b: "b",
+        c: {
+            a : [
+                {
+                    a : "a"
+                }
+            ]
+        }
+    };
+
+    var fooClone = object.clone(foo); // <--- Fully Cloned Version Of foo.
+    var fooLike = object.extend(foo, {a : "new a"}); // <--- Fully Cloned, Props Overwritten.
+
 ```
 
 ## Docker

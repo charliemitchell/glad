@@ -1,1 +1,1 @@
-module.exports = {"editor":"subl"}
+module.exports = {}

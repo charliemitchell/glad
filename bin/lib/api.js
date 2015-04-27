@@ -155,7 +155,7 @@ module.exports = function (argv) {
                 // Try to write the author in
                 if (process.env.USER) {
                     package = package.replace('"author": ""', '"author": "' + process.env.USER + '"');
-                    fs.writeFileSync('./../src/package.json', package);
+                    fs.writeFileSync('./src/package.json', package);
                 }
 
                 console.log("Setting up a Vagrantfile...");
