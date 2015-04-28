@@ -11,11 +11,11 @@ function onError (res, err) {
 module.exports = {
 
     GET : function (req, res) {
-       {{model_cap}}.find(function (err, {{model}}s) {
+       {{model_cap}}.find(function (err, {{model}}) {
             if (err) {
                 onError(res, err);
             } else {
-                res.status(200).json({{model}}s);
+                res.status(200).json({{model}});
             }    
         });
     },
@@ -38,7 +38,7 @@ module.exports = {
                 onError(res, err);
             } else {
                 // You should set a location header when POSTing
-                res.location('http://www.{{mywebapp.com}}/api/{{model}}s/' + doc._id).json({{model}});
+                res.location('http://www.{{mywebapp.com}}/api/{{model}}/' + {{model}}._id).json({{model}});
             }
         });
     },
