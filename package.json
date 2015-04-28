@@ -1,6 +1,6 @@
 {
   "name": "glad",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A node Js Framework for rapidly building REST API's. A Wrapper around express and mongoose with some built in transformations. Currently we are supporting Stacks that use (of course Node) but also Mongo DB (hence the mongoose ODM), and (not required) Redis for session handling.",
   "main": "./lib/index.js",
   "author": "Charlie Mitchell <charliesemailis@gmail.com>",

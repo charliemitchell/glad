@@ -12,7 +12,6 @@ var object = {
             });
           
             return extended;
-        }
     },
     
     clone : function (obj) {
