@@ -15,10 +15,7 @@ var path = require('path'),
     prefs = require((__dirname).replace('lib', "preferences")),
     readline = require('readline'),
     generate,
-    rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
+    rl;
 
 require("colors");
 
@@ -29,6 +26,11 @@ function exists (question, callback) {
 }
 
 module.exports = function (argv) {
+
+    rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
 
     if (argv._[1]) {
         
