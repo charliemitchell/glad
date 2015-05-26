@@ -63,16 +63,20 @@ module.exports = function (callback) {
     (function () {
         var files = fs.readdirSync(routes_path);
         files.forEach(function(file) {
-            var route = path.join(routes_path, file);
-            routes[file.replace('.js', '')] = require(route);
+            if (!file.match(/\.DS_Store/)) {
+                var route = path.join (routes_path, file);
+                routes[file.replace ('.js', '')] = require (route);
+            }
         });
     }());
 
     (function () {
         var files = fs.readdirSync(controllers_path);
         files.forEach(function(file) {
-            var controller = path.join(controllers_path, file);
-            controllers[file.replace('.js', '')] = require(controller);
+            if (!file.match(/\.DS_Store/)){
+                var controller = path.join(controllers_path, file);
+                controllers[file.replace('.js', '')] = require(controller);
+            }
         });
     }());
 
