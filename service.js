@@ -140,7 +140,7 @@ module.exports = function (callback) {
         // Support Users Who don't need a session
         if (!config.sessionless) {
             verbose("Glad: Using Session Middleware");
-            app.use(middleware.readSession);
+            middleware.session(app);
         } else {
             verbose("Glad: Skipping Session Middleware");
         }

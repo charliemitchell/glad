@@ -234,24 +234,6 @@ Some basic tests are written for you, any route that you define in the router wi
 #### Create a session
 
 ```js
-//hooks.js
-var glad = require('glad'),
-    config = require('./config');
-
-module.exports = {
-    app : function (server, app, express) {
-        app.set('trust proxy', 1);
-        app.use(glad.session({
-            secret: config.cookie.secret,
-            resave: false,
-            saveUninitialized: true,
-            cookie: { maxAge : 60*60}
-        }));
-    }
-    // etc...
-};
-```
-```
 // controllers/login.js
 /*
 Users Model Gets Required in, 
@@ -272,7 +254,6 @@ POST : function (req, res) {
                 if (bcrypt.compare(sanitize(req.body.password))) {
                     req.session.authenticated = true; // Create A Valid Session
                     req.session.user = user; // Store Some Data on the session
-                    
                     res.json(user);
 
                 } else {
@@ -289,5 +270,18 @@ POST : function (req, res) {
     }
     //etc...
 ```
+
+## Using Your Own Session Implementation
+In The middleware.js file, simply add a method called session.
+```js
+{
+    //etc...
+    session : function (app) {
+        // Create Your Session Here instead of the default provided by Glad (If you want to use something other than redis, or your own implementation)
+    }
+    //etc...
+}
+```
+
 ## GITHUB
 * [glad](https://www.github.com/charliemitchell/glad) 

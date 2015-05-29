@@ -1,16 +1,11 @@
-var redis = require("redis"),
-    config = require(process.cwd() + '/config'),
+var config = require(process.cwd() + '/config'),
     verbose = require('./logger').onVerbose,
-    cookieparser = require('cookie-parser'),
-    cookie = require('express/node_modules/cookie'),
     session = require('express-session'),
     RedisStore = require('connect-redis')(session),
-    client = redis.createClient(config.redis.port, config.redis.host),
     store = new RedisStore({
         host: config.redis.host,
         port: config.redis.port,
-        prefix: config.redis.key,
-        client: client
+        prefix: config.redis.key
     });
 
 require('colors');
@@ -39,31 +34,15 @@ var middleware = {
     },
 
     // Gets The Session Object from Redis
-    readSession: function(req, res, next) {
-
-        if (req.headers.cookie) {
-            var cookieItem = cookie.parse(req.headers.cookie);
-            if (cookieItem[config.cookie.name]) {
-                var sessionId = cookieparser.signedCookie(cookieItem[config.cookie.name], config.cookie.secret);
-                store.get(sessionId, function(err, thisSession) {
-                    if (err) {
-                        console.log(err);
-                        next();
-                    } else {
-                        if (!thisSession) {
-                            next();
-                        } else {
-                            req.session = thisSession;
-                            next();
-                        }
-                    }
-                });
-            } else {
-                next();
-            }
-        } else {
-            next();
-        }
+    session : function (app) {
+        app.set('trust proxy', 1);
+        app.use(session({
+            store : store,
+            secret: config.cookie.secret,
+            resave: false,
+            saveUninitialized: true,
+            name : config.cookie.name
+        }));
     },
 
     onAfterController : function() {},
