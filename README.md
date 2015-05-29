@@ -1,4 +1,3 @@
-
 # GLAD
 
 ## Required
@@ -6,7 +5,7 @@
 
 
 ## Optional
-* [Redis](http://redis.io/) (No longer a requirement unless you are using a session)
+* [Redis](http://redis.io/)
 * [Mongo DB](http://mongodb.org/)
 
 ## Installation
@@ -167,6 +166,19 @@ As you can see you have an array of Get, Post, Put, Delete methods. the combinat
     require('glad').promise   // <-- bluebird (async awesomeness)
     require('glad').moment    // <-- awesome date library
     require('glad').utility   // <-- utility class
+    require('glad').setter    // <-- Model Transforms
+    require('glad').logger    // <-- Logging Class
+    require('glad').mongoose  // <-- ODM
+    require('glad').promise   // <-- Bluebird (https://www.npmjs.com/package/bluebird)
+    require('glad').session   // <-- Session (express-session)
+    require('glad').ncp       // <-- NCP (https://www.npmjs.com/package/ncp)
+    require('glad').redis     // <-- Redis Client (https://www.npmjs.com/package/redis)
+    require('glad').connectRedis  // <-- Redis Store (https://www.npmjs.com/package/connect-redis)
+    require('glad').errorHandler // Express Error Handler
+    require('glad').cookieParser // <-- Redis Store (https://www.npmjs.com/package/cookie-parser)
+    require('glad').methodOverride // (https://www.npmjs.com/package/method-override)
+    require('glad').optimist // <-- process arguments utility (https://www.npmjs.com/package/optimist)
+    require('glad').sanitizer // <-- String Sanitization (Based on Google's Caja) (https://www.npmjs.com/package/sanitizer)
 ```
 
 ### The Utility Class
@@ -215,7 +227,67 @@ Some basic tests are written for you, any route that you define in the router wi
 `glad p --editor=atom` will set the default editor for your projects to atom (provided that atom's binary is symlinked). (This should be the bash command used to open your editor) (in bash: atom .)
 
 ## Common Mistakes
-You must use a Content-Type header in your request, otherwise the body will never get parsed. (Talking to you POSTMAN people who forget to use headers)
+* You must use a Content-Type header in your request, otherwise the body will never get parsed.
 
+
+## How To's
+#### Create a session
+
+```js
+//hooks.js
+var glad = require('glad'),
+    config = require('./config');
+
+module.exports = {
+    app : function (server, app, express) {
+        app.set('trust proxy', 1);
+        app.use(glad.session({
+            secret: config.cookie.secret,
+            resave: false,
+            saveUninitialized: true,
+            cookie: { maxAge : 60*60}
+        }));
+    }
+    // etc...
+};
+```
+```
+// controllers/login.js
+/*
+Users Model Gets Required in, 
+sanitizer gets required in, 
+bcrypt get's installed and required in if you use it) 
+etc...
+*/
+POST : function (req, res) {
+
+        Users.find({
+            email : sanitize(req.body.email),
+        }).exec(function (err, users) {
+
+            if (users.length) {
+
+                var user = users[0];
+
+                if (bcrypt.compare(sanitize(req.body.password))) {
+                    req.session.authenticated = true; // Create A Valid Session
+                    req.session.user = user; // Store Some Data on the session
+                    
+                    res.json(user);
+
+                } else {
+                    res.json({
+                        err : "The password does not match our records."
+                    });
+                }
+            } else {
+                res.json({
+                   err : "The Email " +  sanitize(req.body.email) + " Does Not Exist."
+                });
+            }
+        });
+    }
+    //etc...
+```
 ## GITHUB
 * [glad](https://www.github.com/charliemitchell/glad) 
