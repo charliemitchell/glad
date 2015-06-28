@@ -1,3 +1,5 @@
+[![Code Climate](https://codeclimate.com/github/charliemitchell/glad/badges/gpa.svg)](https://codeclimate.com/github/charliemitchell/glad)
+
 # GLAD
 
 ## Required
