@@ -1,3 +1,7 @@
+require("colors");
+
+module.exports = function (argv) {
+
 var path = require('path'),
     join = path.join,
     fs = require('fs'),
@@ -16,22 +20,18 @@ var path = require('path'),
     readline = require('readline'),
     generate,
     rl;
-
-require("colors");
-
-function exists (question, callback) {
-    rl.question(question.red, function(answer) {
-      callback(answer);
-    });
-}
-
-module.exports = function (argv) {
-
+    
     rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout
     });
 
+    function exists (question, callback) {
+        rl.question(question.red, function(answer) {
+          callback(answer);
+        });
+    }
+    
     if (argv._[1]) {
         
         model = argv._[1].toLowerCase();
@@ -40,7 +40,7 @@ module.exports = function (argv) {
         generate = {
 
             write : function (type) {
-                fs.writeFileSync('./' + type + 's/' + model + '.js', fs.readFileSync(join(template, type + '.js'), 'utf-8').replace(/{{model}}/g, model));
+                fs.writeFileSync('./' + type + 's/' + model + '.js', fs.readFileSync(join(template, type + '.js'), 'utf-8').replace(/{{model}}/g, model).replace(/{{model_cap}}/g, model_cap));
                 console.log('Generated src/'+ type +'s/' + model + '.js');
             },
 
@@ -77,9 +77,10 @@ module.exports = function (argv) {
 
 
         } else {
-            copy(blueprint, cwd, function() {
-
+            copy(blueprint, cwd, function(err) {
+                
                 fs.writeFileSync('./src/models/' + model + '.js', fs.readFileSync(join(template, 'model.js'), 'utf-8').replace(/{{model}}/g, model));
+                
                 fs.writeFileSync('./src/routes/' + model + '.js', fs.readFileSync(join(template, 'route.js'), 'utf-8').replace(/{{api}}/g, model));
                 fs.writeFileSync('./src/controllers/' + model + '.js', fs.readFileSync(join(template, 'controller.js'), 'utf-8').replace(/{{model}}/g, model).replace(/{{model_cap}}/g, model_cap));
                 fs.writeFileSync('./src/tests/' + model + '.js', fs.readFileSync(join(template, 'test.js'), 'utf-8').replace(/{{model}}/g, model));

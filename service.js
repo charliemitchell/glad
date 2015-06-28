@@ -1,10 +1,64 @@
 require('./exitHandler')();
+require('colors');
+
+var requireCwd = function (aPath) {
+        return require(process.cwd() + aPath);
+    },
+    hooks,
+    fs = require('fs'),
+    config = requireCwd('/config'),
+    globalReport = require('./globalReport'),
+    exposeGlobals = requireCwd('/globals'),
+    express = require("express"),
+    path = require("path"),
+    mongoose = require('mongoose'),
+    app = express(),
+    server = require('http').Server(app),
+    middleware = requireCwd('/middleware'),
+    cookieParser = require('cookie-parser'),
+    policies = requireCwd('/policies'),
+    verbose = require('./logger').onVerbose,
+    routes_path = path.join(process.cwd(),  'routes'),
+    controllers_path = path.join(process.cwd(), 'controllers'),
+    routes = {}, 
+    controllers={},
+    showLogo = require('./logo');
+
+function buildFileSystems(files_path, container) {
+    var files = fs.readdirSync(files_path);
+    files.forEach(function(file) {
+        if (!file.match(/\.DS_Store/)) {
+            var file_ref = path.join (files_path, file);
+            container[file.replace ('.js', '')] = require (file_ref);
+        }
+    });
+}
+
+function applyPolicy (policy, method) {
+    return function (req, res) {
+
+        var accept = function () {
+                method(req, res);
+            },
+            reject = function (custom) {
+                policies.onFailure(req, res, custom);
+            };
+
+        if (policy) {
+            if (policies[policy]) {
+                policies[policy](req, res, accept, reject);
+            } else {
+                console.log(("Glad: The Policy '" + policy + "' Does Not exist, therefore the request was denied").red);
+                reject();
+            }
+        } else { // No Policy, Allow it
+            method(req, res);
+        }
+    };
+}
 
 module.exports = function (callback) {
-    var hooks,
-        fs = require('fs'),
-        config = require(process.cwd() +'/config');
-
+    
     // Prevent Version Issue
     if (fs.existsSync(process.cwd() +'/hooks.js')) {
         hooks = require(process.cwd() +'/hooks');
@@ -15,69 +69,13 @@ module.exports = function (callback) {
         
     // Support Hiding the logo
     if (config.hideLogo !== true) {
-        require('./logo')();
+        showLogo();
     } else {
         console.log("  > Service Starting...".green);
     }
 
-    var globalReport = require('./globalReport'),
-        express = require("express"),
-        path = require("path"),
-        mongoose = require('mongoose'),
-        app = express(),
-        server = require('http').Server(app),
-        middleware = require(process.cwd() +'/middleware'),
-        colors = require('colors'),
-        cookieParser = require('cookie-parser'),
-        policies = require(process.cwd() +'/policies'),
-        verbose = require('./logger').onVerbose,
-        applyPolicy = function (policy, method) {
-            return function (req, res) {
-
-                var accept = function () {
-                        method(req, res);
-                    },
-                    reject = function (custom) {
-                        policies.onFailure(req, res, custom);
-                    };
-
-                if (policy) {
-                    if (policies[policy]) {
-                        policies[policy](req, res, accept, reject);
-                    } else {
-                        console.log(("Glad: The Policy '" + policy + "' Does Not exist, therefore the request was denied").red);
-                        reject();
-                    }
-                } else { // No Policy, Allow it
-                    method(req, res);
-                }
-            }
-        },
-        routes_path = path.join(process.cwd(),  'routes'),
-        controllers_path = path.join(process.cwd(), 'controllers'),
-        routes = {}, controllers={};
-
-
-    (function () {
-        var files = fs.readdirSync(routes_path);
-        files.forEach(function(file) {
-            if (!file.match(/\.DS_Store/)) {
-                var route = path.join (routes_path, file);
-                routes[file.replace ('.js', '')] = require (route);
-            }
-        });
-    }());
-
-    (function () {
-        var files = fs.readdirSync(controllers_path);
-        files.forEach(function(file) {
-            if (!file.match(/\.DS_Store/)){
-                var controller = path.join(controllers_path, file);
-                controllers[file.replace('.js', '')] = require(controller);
-            }
-        });
-    }());
-
+    buildFileSystems(routes_path, routes);
+    buildFileSystems(controllers_path, controller);
 
     if (hooks.app) {
         verbose("Glad: Configuring App");
@@ -87,7 +85,7 @@ module.exports = function (callback) {
     verbose("Glad: Exposing Global Objects".yellow);
 
     // Expose any Globals
-    require(process.cwd() +'/globals')(global, function () {
+    exposeGlobals(global, function () {
         
         verbose('Glad: Globals Registered ::'.magenta, (globalReport()).magenta);
         
