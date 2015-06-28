@@ -2,15 +2,15 @@
 
 var _ = require('lodash'),
     fs = require('fs'),
-    ncp = require('ncp').ncp,
+    //ncp = require('ncp').ncp,
     path = require('path'),
-    child = require('child_process'),
+    //child = require('child_process'),
     argv = require('optimist').argv,
-    Api =  require('./lib/api'),
-    Pref =  require('./lib/preferences'),
+    api =  require('./lib/api'),
+    prefs =  require('./lib/preferences'),
     config = {};
 
-require('colors')
+require('colors');
 
 // Get the glad version
 var version = JSON.parse(fs.readFileSync(path.join((__dirname).replace('bin', ""), '/package.json'))).version;
@@ -29,7 +29,7 @@ else if (argv._.length === 0) {
 
 // If setting preferences
 else if (argv.p || argv.prefs || argv.preferences || argv.pref || (argv._[0] && _.contains(['p', 'prefs', 'preferences', 'pref'], argv._[0]))) {
-    Pref(argv);
+    prefs(argv);
 }
 
 // If starting the server
@@ -39,7 +39,7 @@ else if (argv.s || argv.server || argv.up || argv.u || (argv._[0] && _.contains(
 
 // If Creating an API
 else if (argv.a || argv.api || (argv._[0] && _.contains(['a', 'api'], argv._[0]))) {
-    Api(argv);
+    api(argv);
 }
 
 // If Creating a new directory
