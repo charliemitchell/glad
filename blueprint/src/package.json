@@ -1,10 +1,10 @@
 {
-  "name": "MyCoolService",
+  "name": "ImGladApi",
   "version": "0.0.1",
-  "description": "About My Service",
+  "description": "About My Api",
   "author": "",
   "dependencies": {
-    "glad" : "0.2.0",
+    "glad" : "0.2.1",
     "mocha" : "2.2.1",
     "should": "^5.2.0"
   },
