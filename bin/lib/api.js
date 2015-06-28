@@ -140,7 +140,7 @@ module.exports = function (argv) {
             });
 
         } else {
-            copy(blueprint, cwd, function(err) {
+            copy(blueprint, cwd, function() {
 
                 fs.writeFileSync('./src/models/' + model + '.js', fs.readFileSync(join(template, 'model.js'), 'utf-8').replace(/{{model}}/g, model));
                 fs.writeFileSync('./src/routes/' + model + '.js', fs.readFileSync(join(template, 'route.js'), 'utf-8').replace(/{{api}}/g, model));
@@ -182,14 +182,14 @@ module.exports = function (argv) {
                         console.log("All Done! ".green);
 
                         if (prefs.editor) {
-                            child.exec(prefs.editor + " .")
+                            child.exec(prefs.editor + " .");
                         }
 
                     } else {
                         console.log("ERROR: NPM could not install required packages, You will have to do it manually".red);
                         
                         if (prefs.editor) {
-                            child.exec(prefs.editor + " .")
+                            child.exec(prefs.editor + " .");
                         }
                     }
 
@@ -203,4 +203,4 @@ module.exports = function (argv) {
         console.log("You need to choose a name for the api you wish to generate");
         rl.close();
     }
-}
+};
