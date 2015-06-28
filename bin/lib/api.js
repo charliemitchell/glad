@@ -38,106 +38,43 @@ module.exports = function (argv) {
         model_cap = model.charAt(0).toUpperCase() + model.slice(1);
 
         generate = {
-            
-            model : function () {
-                fs.writeFileSync('./models/' + model + '.js', fs.readFileSync(join(template, 'model.js'), 'utf-8').replace(/{{model}}/g, model));
-                console.log('Generated src/models/' + model + '.js');
-            },
-            route : function () {
-                fs.writeFileSync('./routes/' + model + '.js', fs.readFileSync(join(template, 'route.js'), 'utf-8').replace(/{{api}}/g, model));
-                console.log('Generated src/routes/' + model + '.js');
-            },
-            controller : function () {
-                fs.writeFileSync('./controllers/' + model + '.js', fs.readFileSync(join(template, 'controller.js'), 'utf-8').replace(/{{model}}/g, model).replace(/{{model_cap}}/g, model_cap));
-                console.log('Generated src/controllers/' + model + '.js');
-            },
-            test : function () {
-                fs.writeFileSync('./tests/' + model + '.js', fs.readFileSync(join(template, 'test.js'), 'utf-8').replace(/{{model}}/g, model));
-                console.log('Generated src/tests/' + model + '.js');
+
+            write : function (type) {
+                fs.writeFileSync('./' + type + 's/' + model + '.js', fs.readFileSync(join(template, type + '.js'), 'utf-8').replace(/{{model}}/g, model));
+                console.log('Generated src/'+ type +'s/' + model + '.js');
             },
 
-            queue : {
-
-                model : function (next) {
-                    if (fs.existsSync('./models/' + model + '.js')) {
-                        exists("Overwrite " + 'models/' + model + '.js ? [y/n] ', function (answer) {
-                            if (answer === "y") {
-                                generate.model();
-                            } else {
-                                console.log("Ignoring Model");
-                            }
-                            next();
-                        });
-                    } else {
-                        generate.model();
+            queue : function (type, next) {
+                if (fs.existsSync('./' + type + 's/' + model + '.js')) {
+                    exists("Overwrite " + type + 's/' + model + '.js ? [y/n] ', function (answer) {
+                        if (answer === "y") {
+                            generate.write(type);
+                        } else {
+                            console.log("Ignoring Test");
+                        }
                         next();
-                    }
-                },
-                route : function (next) {
-                     if (fs.existsSync('./routes/' + model + '.js')) {
-                        exists("Overwrite " + 'routes/' + model + '.js ? [y/n] ', function (answer) {
-                            if (answer === "y") {
-                                generate.route();
-                            } else {
-                                console.log("Ignoring Route");
-                            }
-                            next();
-                        });
-                    } else {
-                        generate.route();
-                        next();
-                    }
-
-                },
-                controller : function (next) {
-                    if (fs.existsSync('./controllers/' + model + '.js')) {
-
-                        exists("Overwrite " + 'controllers/' + model + '.js ? [y/n] ', function (answer) {
-                            if (answer === "y") {
-                                generate.controller();
-                            } else {
-                                console.log("Ignoring Controller");
-                            }
-                             next();
-                        });
-                    } else {
-                        generate.controller();
-                         next();
-                    }
-                },
-                test : function (next) {
-                    if (fs.existsSync('./tests/' + model + '.js')) {
-                        exists("Overwrite " + 'tests/' + model + '.js ? [y/n] ', function (answer) {
-                            if (answer === "y") {
-                                generate.test();
-                            } else {
-                                console.log("Ignoring Test");
-                            }
-                            next();
-                        });
-                    } else {
-                        generate.test();
-                        next();
-                    }
+                    });
+                } else {
+                    generate.write(type);
+                    next();
                 }
             }
             
         };
 
-
-
         if (fs.existsSync("./package.json")) {
             
-            generate.queue.model(function () {
-                generate.queue.controller(function () {
-                    generate.queue.route(function () {
-                        generate.queue.test(function () {
+            generate.queue('model', function () {
+                generate.queue('controller', function () {
+                    generate.queue('route', function () {
+                        generate.queue('test', function () {
                             console.log("All Done!");
                             rl.close();
                         });
                     });
                 });
             });
+
 
         } else {
             copy(blueprint, cwd, function() {
