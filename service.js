@@ -17,11 +17,10 @@ module.exports = function (callback) {
     if (config.hideLogo !== true) {
         require('./logo')();
     } else {
-        console.log("  > Service Starting...".green)
+        console.log("  > Service Starting...".green);
     }
 
-    var application_root = __dirname,
-        globalReport = require('./globalReport'),
+    var globalReport = require('./globalReport'),
         express = require("express"),
         path = require("path"),
         mongoose = require('mongoose'),
@@ -32,7 +31,6 @@ module.exports = function (callback) {
         cookieParser = require('cookie-parser'),
         policies = require(process.cwd() +'/policies'),
         verbose = require('./logger').onVerbose,
-        fs = require('fs'),
         applyPolicy = function (policy, method) {
             return function (req, res) {
 
@@ -106,7 +104,7 @@ module.exports = function (callback) {
             verbose("Glad: Bypassing Connection To Mongo DB.".yellow);
         }
 
-        verbose("Glad: Configuring Express Server".yellow)
+        verbose("Glad: Configuring Express Server".yellow);
         // Config
 
         if (hooks.onBeforeBodyParser) {
@@ -234,7 +232,7 @@ module.exports = function (callback) {
                     }
                 });
             }
-        })
+        });
 
         
         // Allow Using Custom Middleware
@@ -255,7 +253,7 @@ module.exports = function (callback) {
             hooks.onAfterListen(server, app, express);
         }
 
-        require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+        require('dns').lookup(require('os').hostname(), function (err, add) {
           console.log('  > Glad: Server Listening On:'.green, (add + ':' + config.port.toString()).green);
         });
 
@@ -263,4 +261,4 @@ module.exports = function (callback) {
             callback(app, express, server);
         }
     });
-}
+};
