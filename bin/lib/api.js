@@ -40,7 +40,12 @@ var path = require('path'),
         generate = {
 
             write : function (type) {
-                fs.writeFileSync('./' + type + 's/' + model + '.js', fs.readFileSync(join(template, type + '.js'), 'utf-8').replace(/{{model}}/g, model).replace(/{{model_cap}}/g, model_cap));
+                fs
+                .writeFileSync('./' + type + 's/' + model + '.js', fs.readFileSync(join(template, type + '.js'), 'utf-8')
+                .replace(/{{model}}/g, model)
+                .replace(/{{api}}/g, model)
+                .replace(/{{model_cap}}/g, model_cap));
+
                 console.log('Generated src/'+ type +'s/' + model + '.js');
             },
 
