@@ -1,5 +1,5 @@
 require('colors');
-var serverstart = require('time'),
+var serverstart = require('./time'),
     this_package_json = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '/package.json'))),
     their_package = JSON.parse(require('fs').readFileSync(require('path').join(process.cwd(), '/package.json'))),
     ascii = "\n GLAD Version " + (this_package_json.version) + ' (ツ)'.green  + "\n";

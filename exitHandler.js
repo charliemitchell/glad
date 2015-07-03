@@ -1,5 +1,5 @@
 require('colors');
-var server_end = require('time');
+var server_end = require('./time');
 
 module.exports = function() {
     process.on('exit', function(code) {

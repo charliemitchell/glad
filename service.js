@@ -75,7 +75,7 @@ module.exports = function (callback) {
     }
 
     buildFileSystems(routes_path, routes);
-    buildFileSystems(controllers_path, controller);
+    buildFileSystems(controllers_path, controllers);
 
     if (hooks.app) {
         verbose("Glad: Configuring App");
