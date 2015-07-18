@@ -8,6 +8,10 @@ module.exports = {
         path : '/{{api}}/:id',
         action : 'findOne',
         // policy : 'authenticated'
+    },{
+        path : '/{{api}}/:id/*',
+        action : 'scaffold',
+        // policy : 'authenticated'
     }],
     
     POST : [{

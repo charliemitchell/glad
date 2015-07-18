@@ -32,6 +32,32 @@ module.exports = {
         });
     },
 
+    scaffold : function (req, res) {
+        {{model_cap}}.findOne({
+            _id: req.params.id
+        }).exec(function (err, {{model}}) {
+            if (err) {
+                onError(res, err);
+            } else {
+                var path = req.params['0'].split('/'),
+                    scaffold = {{model}};
+
+                for (var i=0, len=path.length; i < len; i +=1) {
+                    if (scaffold[path[i]] === undefined ) {
+                        res.status(404).json({
+                            error : "The path " + path[i] + " does Not Exist on the resource " + ((i-1 === -1) ? " {{model}} " : (path[i-1]))
+                        })
+                        return;
+                    } else {
+                        scaffold = scaffold[path[i]];
+                    }
+                }
+
+                res.status(200).json(scaffold);
+            }
+        });
+    },
+
     POST : function (req, res) {
         new {{model_cap}}(req.body).save(function (err, {{model}}) {
             if (err) {
