@@ -71,18 +71,11 @@ module.exports = {
 
     PUT : function (req, res) {
 
-        {{model_cap}}.findOne({_id: req.params.id}).remove(function (err) {
+        {{model_cap}}.findOneAndUpdate({_id: req.params.id}, req.body, {/*upsert: true*/}, function (err, doc) {
             if (err) {
                 onError(res, err);
             } else {
-                req.body._id = req.params.id;
-                new {{model_cap}}(req.body).save(function (err, {{model}}) {
-                    if (err) {
-                        onError(res, err);
-                    } else {
-                        res.status(200).json({{model}});
-                    }
-                });
+                res.status(200).json(doc);
             }
         });
     },
