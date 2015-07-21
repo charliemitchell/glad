@@ -35,14 +35,21 @@ var middleware = {
 
     // Gets The Session Object from Redis
     session : function (app) {
+        var cookie = config.cookie;
+
         app.set('trust proxy', 1);
-        app.use(session({
-            store : store,
-            secret: config.cookie.secret,
-            resave: false,
-            saveUninitialized: true,
-            name : config.cookie.name
-        }));
+        var hour = 3600000,
+            day = 24 * hour,
+            sessions = session({
+                store : store,
+                secret: cookie.secret === undefined ? "glad" : cookie.secret,
+                resave: cookie.resave === undefined ? false : cookie.resave,
+                saveUninitialized: cookie.saveUninitialized === undefined ? true : cookie.saveUninitialized,
+                name : cookie.name === undefined ? "connect.sid" : cookie.name,
+                cookie : {maxAge: cookie.maxAge === undefined ? day : cookie.maxAge}
+            });
+
+        app.use(sessions);
     },
 
     onAfterController : function() {},

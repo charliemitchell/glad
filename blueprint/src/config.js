@@ -2,7 +2,7 @@ var localhost = process.env.LOCALHOST || 'localhost';
 
 module.exports = {
 
-    port : 4242, /*ns-port*/ // <-- Leave that comment if you would like to run `nimble set port 4345`
+    port : 4242, /*ns-port*/ // <-- Leave that comment if you would like to run `glad set port 4345`
 
     sessionless : false, // Set True if you don't want to use a session
 
@@ -24,8 +24,12 @@ module.exports = {
     },
 
     cookie : {
-      name : 'yourcookie.id',
-      secret: 'Your session secret'
+        name : 'connect.sid',
+        secret: 'Your session secret',
+        resave : false,
+        saveUninitialized : true,
+        maxAge : (24 * 3600000)
+
     },
 
     // MongoDB (Just Remove this entire key if you would like to run without mongo DB)
