@@ -20,16 +20,25 @@ var requireCwd = function (aPath) {
     verbose = require('./logger').onVerbose,
     routes_path = path.join(process.cwd(),  'routes'),
     controllers_path = path.join(process.cwd(), 'controllers'),
-    routes = {}, 
+    routes = {},
     controllers={},
-    showLogo = require('./logo');
+    showLogo = require('./logo'),
+    errors = [];
 
 function buildFileSystems(files_path, container) {
     var files = fs.readdirSync(files_path);
     files.forEach(function(file) {
         if (!file.match(/\.DS_Store/)) {
             var file_ref = path.join (files_path, file);
-            container[file.replace ('.js', '')] = require (file_ref);
+            try {
+                container[file.replace ('.js', '')] = require(file_ref);
+            } catch (err) {
+                errors.push({
+                    message : "> Could Not Bind " + files_path.split('/').pop().toString() + '::' + file.replace ('.js', '') + " To Any Route!",
+                    err : err
+                });
+            }
+
         }
     });
 }
@@ -58,7 +67,7 @@ function applyPolicy (policy, method) {
 }
 
 module.exports = function (callback) {
-    
+
     // Prevent Version Issue
     if (fs.existsSync(process.cwd() +'/hooks.js')) {
         hooks = require(process.cwd() +'/hooks');
@@ -66,7 +75,7 @@ module.exports = function (callback) {
         console.log("Glad supports a hooks file. Grab one from our github at http://raw.githubusercontent.com/charliemitchell/nimble/master/blueprint/hooks.js");
         hooks = {};
     }
-        
+
     // Support Hiding the logo
     if (config.hideLogo !== true) {
         showLogo();
@@ -86,9 +95,9 @@ module.exports = function (callback) {
 
     // Expose any Globals
     exposeGlobals(global, function () {
-        
+
         verbose('Glad: Globals Registered ::'.magenta, (globalReport()).magenta);
-        
+
         if (hooks.onBeforeMongoose) {
             verbose("Glad: Configuring Mongoose");
             hooks.onBeforeMongoose(mongoose, server, app, express);
@@ -109,17 +118,17 @@ module.exports = function (callback) {
             verbose("Glad: onBeforeBodyParser");
             hooks.onBeforeBodyParser(server, app, express);
         }
-        
+
         app.use(require('body-parser')[config.bodyParser]());
-        
-        
+
+
         if (hooks.onBeforeMethodOverride) {
             verbose("Glad: onBeforeMethodOverride");
             hooks.onBeforeMethodOverride(server, app, express);
         }
 
         app.use(require('method-override')());
-        
+
         if (hooks.onBeforeCookieParser) {
             verbose("Glad: onBeforeCookieParser");
             hooks.onBeforeCookieParser(server, app, express);
@@ -142,7 +151,7 @@ module.exports = function (callback) {
         }
 
         app.use(middleware.onRequest);
-        
+
         app.use(function (req, res, next) {
             req.on("end", function() {
                 middleware.onAfterResponse(req, res);
@@ -162,7 +171,7 @@ module.exports = function (callback) {
         });
 
         app.use(require('errorhandler')({ dumpExceptions: true, showStack: true }));
-        
+
 
         // Bind The Routes
         Object.keys(routes).forEach(function (key) {
@@ -232,7 +241,7 @@ module.exports = function (callback) {
             }
         });
 
-        
+
         // Allow Using Custom Middleware
         if (middleware.custom) {
             middleware.custom(app, express);
@@ -252,7 +261,13 @@ module.exports = function (callback) {
         }
 
         require('dns').lookup(require('os').hostname(), function (err, add) {
-          console.log('  > Glad: Server Listening On:'.green, (add + ':' + config.port.toString()).green);
+            console.log(' :) Glad: Server Listening On:'.green, (add + ':' + config.port.toString()).green);
+            if (errors.length) {
+                console.log(" :( Glad: Server is up with the following errors".red);
+                errors.forEach(function (err) {
+                    console.log((err.message).red);
+                });
+            }
         });
 
         if (callback && typeof callback === "function") {
