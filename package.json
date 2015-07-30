@@ -1,6 +1,7 @@
 {
   "name": "glad",
-  "version": "0.2.5",
+  "main": "./lib/index.js",
+  "version": "0.2.6",
   "description": "A node Js Framework for rapidly building REST API's. Built On top of express, redis, mongodb and mongoose.",
   "author": "Charlie Mitchell <charliesemailis@gmail.com>",
   "license": "MIT",
