@@ -8,7 +8,10 @@ module.exports = {
     },
 
     onBeforeBodyParser : function (server, app, express) {
-
+        /* Hint:
+            If you would like to add add additional body parsers before the one in your config file,
+            Do it here.
+         */
     },
 
     onBeforeMethodOverride : function (server, app, express) {

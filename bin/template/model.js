@@ -1,8 +1,9 @@
-/*
-    Desription of Model
-    :: Boilerplate
-    About Mongoose :: mongoosejs.com
-*/
+/**
+ * The {{model}} Model
+ *
+ * @module models/{{model}}
+ * @version 1.0
+ */
 var mongoose = require('glad').mongoose,
     Schema = mongoose.Schema,
     validator = require('glad').validate,

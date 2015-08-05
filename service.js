@@ -119,7 +119,7 @@ module.exports = function (callback) {
             hooks.onBeforeBodyParser(server, app, express);
         }
 
-        app.use(require('body-parser')[config.bodyParser]());
+        app.use(require('body-parser')[config.bodyParser]({limit: config.maxBodySize || '1mb'}));
 
 
         if (hooks.onBeforeMethodOverride) {

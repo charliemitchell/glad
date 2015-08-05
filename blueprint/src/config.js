@@ -10,17 +10,29 @@ module.exports = {
 
     reportGlobalVars : true,
 
-    localkey : process.env.LOCALKEY || 'dev', 
+    /**
+     * Typically Used for key sharing between separate server (service) instances.
+     */
+    localkey : process.env.LOCALKEY || 'dev',
 
+    /**
+     * The Address of localhost
+     */
     localhost : localhost,
 
+    /**
+     * Interpret Request Bodies as JSON
+     */
     bodyParser : 'json', // What Kind of API is this [https://www.npmjs.com/package/body-parser]
-    
+    maxBodySize : '100kb', // The max body size of a request [https://www.npmjs.com/package/body-parser]
+
     // Used For Session
     redis : {
-      host: localhost,
-      port: 6379,
-      key : 'sess:'
+        host: localhost,
+        port: 6379,
+        key : 'sess:',
+        username : false,
+        password : false
     },
 
     cookie : {
@@ -36,7 +48,8 @@ module.exports = {
     mongodb : {
         host : localhost,
         port : 27017,
-        database : 'yourdatabase'
+        database : 'yourdatabase',
+        username : false,
+        password : false
     }
-
-}
+};
