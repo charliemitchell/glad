@@ -172,6 +172,24 @@ module.exports = function (callback) {
 
         app.use(require('errorhandler')({ dumpExceptions: true, showStack: true }));
 
+        app.use(function (req, res, next) {
+            var send = res.send;
+            res.send = function () {
+
+                if (req.route.methods.put) {
+                    middleware.onAfterPUT(req);
+                } else if (req.route.methods.get) {
+                    middleware.onAfterGET(req);
+                } else if (req.route.methods.post) {
+                    middleware.onAfterPOST(req);
+                } else if (req.route.methods.delete) {
+                    middleware.onAfterDELETE(req);
+                }
+
+                send.apply(res, arguments);
+            };
+            next();
+        });
 
         // Bind The Routes
         Object.keys(routes).forEach(function (key) {
