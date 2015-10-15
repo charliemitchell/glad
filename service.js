@@ -38,7 +38,6 @@ function buildFileSystems(files_path, container) {
                     err : err
                 });
             }
-
         }
     });
 }
@@ -205,6 +204,14 @@ module.exports = function (callback) {
                             throw("Error Binding Route: GET: " + route.path + "\nController for " + key + " has no method " + route.action);
                         }
                     } else {
+                        console.log(errors);
+
+                        console.log("Dumping Stack:".red);
+                        console.log("Running in " + process.cwd());
+                        console.log("Error binding route " + route);
+                        console.log("Was expecting controllers["+key+"] to be a controller. instead found " + controllers[key]);
+                        console.log("The following was the result of loading all of your controllers into a hash...");
+                        console.log(controllers);
                         throw("Error Binding Route: GET: " + route.path + "\n Could not locate a controller for " + key);
                     }
                 });
@@ -264,6 +271,7 @@ module.exports = function (callback) {
         if (middleware.custom) {
             middleware.custom(app, express);
         }
+
 
         if (hooks.onBeforeListen) {
             verbose("Glad: onBeforeListen");
