@@ -273,7 +273,7 @@ POST : function (req, res) {
     //etc...
 ```
 
-## Using Your Own Session Implementation
+## Using Your Own Session Logic
 In The middleware.js file, simply add a method called session.
 ```js
 {
@@ -283,6 +283,27 @@ In The middleware.js file, simply add a method called session.
     }
     //etc...
 }
+```
+## Using Your Own Session Implementation
+In The hooks.js file, add something to the degree of
+```js
+module.exports = {
+    app : function (server, app, express) {
+        app.set('trust proxy', 1); // trust first proxy
+        var session = glad.session,
+            RedisStore = glad.connectRedis(session),
+            sessions =  session({
+                secret: config.cookie.secret,
+                resave: false,
+                store: new RedisStore(),
+                saveUninitialized: true,
+                cookie: { maxAge : 60 * 60 }
+            });
+        app.use(sessions);
+    },
+    // etc...
+}
+    
 ```
 
 ## GITHUB
