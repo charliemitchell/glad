@@ -20,6 +20,31 @@ if (argv.v || argv.version || (argv._[0] && _.contains(['v', 'version'], argv._[
     console.log('v' + version);
 }
 
+// IF Running `glad list`
+if (argv.l || argv.list || (argv._[0] && _.contains(['l', 'list'], argv._[0]))) {
+    var files_path = process.cwd() + '/controllers',
+        files = fs.readdirSync(files_path),
+        mode = "Controllers";
+
+    if (argv._[1]) {
+        if (_.contains(['m', 'model', 'models'], argv._[1])) {
+            files_path = process.cwd() + '/models';
+            mode = "Models";
+        } else if (_.contains(['r', 'route', 'routes'], argv._[1])) {
+            files_path = process.cwd() + '/routes';
+            mode = "Routes"
+        }
+    }
+
+    console.log("Showing all " + mode);
+
+    files.forEach(function(file, idx) {
+        if (!file.match(/\.DS_Store/)) {
+            console.log( String(idx).green +  ((idx <=9) ? "   " : (idx <=99) ? "  " : " ") + (file.replace('.js', '')).blue);
+        }
+    });
+}
+
 // If Running Glad with out any args
 else if (argv._.length === 0) {
     console.log('');
