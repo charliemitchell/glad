@@ -67,6 +67,11 @@ else if (argv.a || argv.api || (argv._[0] && _.contains(['a', 'api'], argv._[0])
     api(argv);
 }
 
+// If Destroying an API
+else if (argv.d || argv.destroy || (argv._[0] && _.contains(['d', 'destroy'], argv._[0]))) {
+    api(argv, true);
+}
+
 // If Creating a new directory
 else if (argv.new || argv.n || (argv._[0] && _.contains(['n', 'new'], argv._[0]))) {
     if (argv._[1]) {

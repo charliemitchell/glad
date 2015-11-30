@@ -1,6 +1,6 @@
 require("colors");
 
-module.exports = function (argv) {
+module.exports = function (argv, remove) {
 
 var path = require('path'),
     join = path.join,
@@ -63,22 +63,58 @@ var path = require('path'),
                     generate.write(type);
                     next();
                 }
+            },
+
+            remove : function (type, next) {
+
+                if (fs.existsSync('./' + type + 's/' + model + '.js')) {
+                    fs.unlink('./' + type + 's/' + model + '.js', function () {
+                        console.log(('Deleted src/' + type + 's/' + model + '.js').red);
+                        next();
+                    });
+                } else {
+                    console.log(('src/' + type + 's/' + model + '.js Could Not Be Found!').red);
+                    next();
+                }
+
+
             }
             
         };
 
         if (fs.existsSync("./package.json")) {
-            
-            generate.queue('model', function () {
-                generate.queue('controller', function () {
-                    generate.queue('route', function () {
-                        generate.queue('test', function () {
-                            console.log("All Done!");
-                            rl.close();
+            if (remove) {
+                exists("Are you sure you want to remove the API for " + ('"' + model + '"').blue + " ", function (answer) {
+                    if (answer === "y") {
+                        generate.remove('model', function () {
+                            generate.remove('controller', function () {
+                                generate.remove('route', function () {
+                                    generate.remove('test', function () {
+                                        console.log("All Done!".green);
+                                        rl.close();
+                                    });
+                                });
+                            });
+                        });
+                    } else {
+                        console.log("Ok, no action was taken");
+                        process.exit(0);
+                    }
+                });
+
+            } else {
+                generate.queue('model', function () {
+                    generate.queue('controller', function () {
+                        generate.queue('route', function () {
+                            generate.queue('test', function () {
+                                console.log("All Done!".green);
+                                rl.close();
+                            });
                         });
                     });
                 });
-            });
+            }
+
 
 
         } else {
