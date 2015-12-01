@@ -10,6 +10,8 @@ module.exports = {
 
     reportGlobalVars : true,
 
+    exposeModels : false, // Set True if you would like to expose Models as Global Variables
+
     /**
      * Typically Used for key sharing between separate server (service) instances.
      */

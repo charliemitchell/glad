@@ -20,19 +20,29 @@ var requireCwd = function (aPath) {
     verbose = require('./logger').onVerbose,
     routes_path = path.join(process.cwd(),  'routes'),
     controllers_path = path.join(process.cwd(), 'controllers'),
+    models_path = path.join(process.cwd(), 'models'),
     routes = {},
     controllers={},
     showLogo = require('./logo'),
     errors = [];
 
-function buildFileSystems(files_path, container) {
+function buildFileSystems(files_path, container, capitalize) {
     var files = fs.readdirSync(files_path);
     files.forEach(function(file) {
         if (!file.match(/\.DS_Store/)) {
-            var file_ref = path.join (files_path, file);
+            var file_ref = path.join (files_path, file),
+                cap = file.replace ('.js', '')[0].toUpperCase();
             try {
-                container[file.replace ('.js', '')] = require(file_ref);
+                if (capitalize) {
+                    container[cap + file.slice(1, file.length).replace ('.js', '')] = require(file_ref);
+                } else {
+                    container[file.replace ('.js', '')] = require(file_ref);
+                }
             } catch (err) {
+                console.log('\n');
+                console.log("MAIN ERROR".red);
+                console.log((err.stack).red);
+                console.log('\n');
                 errors.push({
                     message : "> Could Not Bind " + files_path.split('/').pop().toString() + '::' + file.replace ('.js', '') + " To Any Route!",
                     err : err
@@ -80,6 +90,10 @@ module.exports = function (callback) {
         showLogo();
     } else {
         console.log("  > Service Starting...".green);
+    }
+
+    if (config.exposeModels) {
+        buildFileSystems(models_path, global, true);
     }
 
     buildFileSystems(routes_path, routes);

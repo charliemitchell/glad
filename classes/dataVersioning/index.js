@@ -140,7 +140,7 @@ module.exports = {
         VERSIONS[name] = model;
     },
 
-    keyDifference : require('../helpers/keyDifference'),
+    keyDifference : require('./helpers/keyDifference'),
 
     modelFromDeselectionArray : require('./method')
 };
