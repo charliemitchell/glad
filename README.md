@@ -1,6 +1,9 @@
-[![Code Climate](https://codeclimate.com/github/charliemitchell/glad/badges/gpa.svg)](https://codeclimate.com/github/charliemitchell/glad)
+<div style="width:100%; text-align:center; background-color:#F5BE0B;">
+<img align="center" src="/media/glad_small.jpg" alt="glad">
+</div>
 
-# GLAD
+# Glad
+[![Code Climate](https://codeclimate.com/github/charliemitchell/glad/badges/gpa.svg)](https://codeclimate.com/github/charliemitchell/glad)
 
 ## Required
 * [Node.js](http://nodejs.org/) (with NPM)
