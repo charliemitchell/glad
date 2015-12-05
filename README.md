@@ -353,16 +353,8 @@ to assist you in creating your own. All with just a few lines of code. Please Re
  
   ```
  
-  ## Pipeline and single method example
+  ## Example
   ```
-   myModel.find().exec(function (err, docs) {
-       docs = docs.map(function(doc) {
-           return doc.forVersion(['removeSystemData', 'removePrivateData', 'minimalData']); // should pipe all the filters
-       });
-    });
- 
-    // ------- OR ----------
- 
    myModel.find().exec(function (err, docs) {
        docs = docs.map(function (doc) {
            return doc.removeSystemData();
@@ -372,7 +364,7 @@ to assist you in creating your own. All with just a few lines of code. Please Re
   ```
  
   Example of Using The extend feature
- 
+ ```
    // Best to do this during bootstrapping
  
    var dataVersions = require('glad').dataVersions;
