@@ -10,7 +10,7 @@
 var Method = require('../method');
 
 module.exports = function (schema, keys) {
-    schema.statics.removeSystemData = new Method(keys);
+    schema.methods.removeSystemData = new Method(keys);
 };
 
 // Usage Example

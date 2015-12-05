@@ -6,10 +6,14 @@ module.exports = function (object, stop_if_key_exists, void_function) {
         for (var k in obj) {
             if (obj.hasOwnProperty(k)){
 
-                if ((typeof obj[k] === 'object') && !obj[k].hasOwnProperty(stop_if_key_exists) && void_function(obj[k])) {
+                if ((typeof obj[k] === 'object') && !obj[k].hasOwnProperty(stop_if_key_exists) && void_function(obj[k], k)) {
                     walkObject(obj[k], stack + "." + k);
                 } else {
-                    output.push(stack + "." + k);
+                    if (k !== '0') {
+                        output.push(stack + "." + k);
+                    } else {
+                        output.push(stack);
+                    }
                 }
             }
         }

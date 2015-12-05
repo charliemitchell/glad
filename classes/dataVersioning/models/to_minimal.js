@@ -11,7 +11,10 @@ var Method = require('../method'),
 
 module.exports = function (schema, keys) {
     // The Deselection array is cached
-    var deselection = keyDifference (keys, schema.tree, 'getter');
+    var deselection = keyDifference (keys, schema.tree, 'getters', function (value, key) {
+        var valid = (typeof value.type !== 'function') && (key !== '0');
+        return valid;
+    });
     schema.methods.minimalData = new Method(deselection);
 };
 

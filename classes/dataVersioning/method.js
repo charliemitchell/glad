@@ -13,7 +13,7 @@ module.exports = function (deselection) {
             Object.keys(docObject).forEach(function (key) {
                 if (docObject.hasOwnProperty(key)) {
 
-                    if ((deselection.indexOf(key) === -1) || ( !dot.pick(key, docObject) )) {
+                    if (deselection.indexOf(key) === -1) {
                         dot.copy(key, key, docObject, output);
                     }
                 }

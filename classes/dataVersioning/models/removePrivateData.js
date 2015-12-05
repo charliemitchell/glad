@@ -9,5 +9,5 @@ var Method = require('../method'),
     keyDifference  = require('../helpers/keyDifference');
 
 module.exports = function (schema, keys) {
-    schema.statics.removePrivateData = new Method(keys);
+    schema.methods.removePrivateData = new Method(keys);
 };

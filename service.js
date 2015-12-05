@@ -29,7 +29,7 @@ var requireCwd = function (aPath) {
 function buildFileSystems(files_path, container, capitalize) {
     var files = fs.readdirSync(files_path);
     files.forEach(function(file) {
-        if (!file.match(/\.DS_Store/)) {
+        if (file.match(/(\.js)$/)) {
             var file_ref = path.join (files_path, file),
                 cap = file.replace ('.js', '')[0].toUpperCase();
             try {
@@ -128,7 +128,7 @@ module.exports = function (callback) {
         // Config
 
         if (hooks.onBeforeBodyParser) {
-            verbose("Glad: onBeforeBodyParser");
+            verbose("Glad: Hooks :: onBeforeBodyParser");
             hooks.onBeforeBodyParser(server, app, express);
         }
 
@@ -136,14 +136,14 @@ module.exports = function (callback) {
 
 
         if (hooks.onBeforeMethodOverride) {
-            verbose("Glad: onBeforeMethodOverride");
+            verbose("Glad: Hooks :: onBeforeMethodOverride");
             hooks.onBeforeMethodOverride(server, app, express);
         }
 
         app.use(require('method-override')());
 
         if (hooks.onBeforeCookieParser) {
-            verbose("Glad: onBeforeCookieParser");
+            verbose("Glad: Hooks :: onBeforeCookieParser");
             hooks.onBeforeCookieParser(server, app, express);
         }
 
@@ -151,16 +151,16 @@ module.exports = function (callback) {
 
 
         if (hooks.onBeforeReadSession) {
-            verbose("Glad: onBeforeReadSession");
+            verbose("Glad: Hooks :: onBeforeReadSession");
             hooks.onBeforeReadSession(server, app, express);
         }
 
         // Support Users Who don't need a session
         if (!config.sessionless) {
-            verbose("Glad: Using Session Middleware");
+            verbose("Glad: Middleware :: Using Session Middleware");
             middleware.session(app);
         } else {
-            verbose("Glad: Skipping Session Middleware");
+            verbose("Glad: Middleware :: Skipping Session Middleware");
         }
 
         app.use(middleware.onRequest);
@@ -173,7 +173,7 @@ module.exports = function (callback) {
         });
 
         if (hooks.onBeforeRouter) {
-            verbose("Glad: onBeforeRouter");
+            verbose("Glad: Hooks :: onBeforeRouter");
             hooks.onBeforeRouter(server, app, express);
         }
 
@@ -288,7 +288,7 @@ module.exports = function (callback) {
 
 
         if (hooks.onBeforeListen) {
-            verbose("Glad: onBeforeListen");
+            verbose("Glad: Hooks :: onBeforeListen");
             hooks.onBeforeListen(server, app, express);
         }
 
@@ -296,7 +296,7 @@ module.exports = function (callback) {
         server.listen(config.port || 4242);
 
         if (hooks.onAfterListen) {
-            verbose("Glad: onBeforeListen");
+            verbose("Glad: Hooks :: onAfterListen");
             hooks.onAfterListen(server, app, express);
         }
 
