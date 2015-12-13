@@ -5,9 +5,10 @@
 # Glad
 [![Code Climate](https://codeclimate.com/github/charliemitchell/glad/badges/gpa.svg)](https://codeclimate.com/github/charliemitchell/glad)
 
+* [Glad JS Website](http://gladjs.com/)
+
 ## Required
 * [Node.js](http://nodejs.org/) (with NPM)
-
 
 ## Optional
 * [Redis](http://redis.io/)
