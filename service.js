@@ -75,7 +75,18 @@ function applyPolicy (policy, method) {
     };
 }
 
-module.exports = function (callback) {
+module.exports = function (callback, conf) {
+
+    if (conf) {
+      (function () {
+        for (var key in conf) {
+          if (conf.hasOwnProperty(key)) {
+            console.log("Extending", key);
+            config[key] = conf[key];
+          }
+        }
+      }());
+    }
 
     // Prevent Version Issue
     if (fs.existsSync(process.cwd() +'/hooks.js')) {

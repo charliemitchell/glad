@@ -12,6 +12,24 @@ var _ = require('lodash'),
 
 require('colors');
 
+// IF Running `glad -h`
+if (argv.h || argv.help || (argv._[0] && _.contains(['h', 'help'], argv._[0]))) {
+  console.log("Available Commands:".green)
+  console.log("glad api [name]        # Creates a new API".yellow);
+  console.log("glad serve             # Starts the server".yellow);
+  console.log("glad run               # Runs a job or script in the same process as a new application server (on port 4243)".yellow);
+  console.log("glad -v                # Displays The Version of Glad".yellow);
+  console.log("glad list [m|r]        # Displays All of the controllers, models, routes in your application. Run glad list for controllers".yellow);
+  console.log("glad destroy [name]    # Destroys an API, removes the model, route, controller, and test".yellow);
+
+  console.log('\nALIASES:'.green);
+  console.log("glad a [name]          # glad api [name]".yellow);
+  console.log("glad s                 # glad serve".yellow);
+  console.log("glad r                 # glad run".yellow);
+  console.log("glad l [m|r]           # glad list [m|r]".yellow);
+  console.log("glad d [name]          # glad destroy [name]".yellow);
+}
+
 // Get the glad version
 var version = JSON.parse(fs.readFileSync(path.join((__dirname).replace('bin', ""), '/package.json'))).version;
 
@@ -39,11 +57,34 @@ if (argv.l || argv.list || (argv._[0] && _.contains(['l', 'list'], argv._[0]))) 
     console.log("Showing all " + mode);
 
     files.forEach(function(file, idx) {
-        if (!file.match(/\.DS_Store/)) {
+        if (!file.match(/^\./)) {
             console.log( String(idx).green +  ((idx <=9) ? "   " : (idx <=99) ? "  " : " ") + (file.replace('.js', '')).blue);
         }
     });
 }
+
+
+// Glad Run
+if (argv.r || argv.run || (argv._[0] && _.contains(['r', 'run'], argv._[0]))) {
+  console.log('You want to run', argv._[1], 'Jobs run on port 4243');
+  try {
+
+    require(process.cwd() + '/node_modules/glad/service')(false, {
+      port : 4243
+    });
+
+    setTimeout(function () {
+      try {
+        require(path.join(process.cwd(), argv._[1]))();
+      } catch (e) {
+        console.error("Could Not Load Job", path.join(process.cwd() , argv._[1]))
+      }
+    }, 5000);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 
 // If Running Glad with out any args
 else if (argv._.length === 0) {
