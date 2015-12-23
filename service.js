@@ -81,7 +81,6 @@ module.exports = function (callback, conf) {
       (function () {
         for (var key in conf) {
           if (conf.hasOwnProperty(key)) {
-            console.log("Extending", key);
             config[key] = conf[key];
           }
         }
@@ -327,9 +326,11 @@ module.exports = function (callback, conf) {
         }
 
         if (config.interactive) {
-          console.log("Application will now run in interactive mode".green);
-          repl = require("repl");
-          r = repl.start("Glad > ".green);
+          setTimeout(function () {
+            console.log("Application will now run in interactive mode".green);
+            repl = require("repl");
+            r = repl.start("Glad > ".yellow);
+          }, 1000);
         }
 
         if (callback && typeof callback === "function") {

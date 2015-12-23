@@ -103,8 +103,10 @@ else if (argv.p || argv.prefs || argv.preferences || argv.pref || (argv._[0] && 
 
 // If starting the server
 else if (argv.s || argv.server || argv.up || argv.u || (argv._[0] && _.contains(['s', 'server', 'up', 'u'], argv._[0]))) {
-  config.interactive = (argv.i || argv.interactive || (argv._[1] && _.contains(['i', 'interactive'], argv._[1])));
-  require(process.cwd() + '/node_modules/glad/service')(config);
+  var interactive = (argv.i || argv.interactive || (argv._[1] && _.contains(['i', 'interactive'], argv._[1])));
+  require(process.cwd() + '/node_modules/glad/service')(config, {
+    interactive : interactive
+  });
 }
 
 // If Creating an API
