@@ -29,7 +29,7 @@
     "lodash": "^3.2.0",
     "method-override": "^2.3.1",
     "mongoose": "3.8.23",
-    "ncp": "^1.0.1",
+    "cpr": "1.0.0",
     "optimist": "^0.6.1",
     "redis": "^0.12.1",
     "sanitizer": "0.1.2",

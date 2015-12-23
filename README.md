@@ -177,7 +177,7 @@ As you can see you have an array of Get, Post, Put, Delete methods. the combinat
     require('glad').mongoose  // <-- ODM
     require('glad').promise   // <-- Bluebird (https://www.npmjs.com/package/bluebird)
     require('glad').session   // <-- Session (express-session)
-    require('glad').ncp       // <-- NCP (https://www.npmjs.com/package/ncp)
+    require('glad').cpr       // <-- CPR Copy Recursively (https://www.npmjs.com/package/cpr)
     require('glad').redis     // <-- Redis Client (https://www.npmjs.com/package/redis)
     require('glad').connectRedis    // <-- Redis Store (https://www.npmjs.com/package/connect-redis)
     require('glad').errorHandler    // Express Error Handler

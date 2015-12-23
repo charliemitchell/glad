@@ -2,9 +2,7 @@
 
 var _ = require('lodash'),
     fs = require('fs'),
-    //ncp = require('ncp').ncp,
     path = require('path'),
-    //child = require('child_process'),
     argv = require('optimist').argv,
     api =  require('./lib/api'),
     prefs =  require('./lib/preferences'),
@@ -21,6 +19,8 @@ if (argv.h || argv.help || (argv._[0] && _.contains(['h', 'help'], argv._[0]))) 
   console.log("glad -v                # Displays The Version of Glad".yellow);
   console.log("glad list [m|r]        # Displays All of the controllers, models, routes in your application. Run glad list for controllers".yellow);
   console.log("glad destroy [name]    # Destroys an API, removes the model, route, controller, and test".yellow);
+  console.log("glad p --editor [bin]  # Sets your preferred editor, pass in the command that opens your editor from terminal".yellow);
+  console.log("                         examples include subl, wstorm, atom, etc...".yellow);
 
   console.log('\nALIASES:'.green);
   console.log("glad a [name]          # glad api [name]".yellow);
@@ -197,7 +197,7 @@ else if (argv.stub || (argv._[0] && _.contains(['stub'], argv._[0]))) {
 
     //     if (fs.existsSync(pathToStub)) {
 
-    //         ncp(pathToStub, process.cwd(), function(err) {
+    //         cpr(pathToStub, process.cwd(), function(err) {
 
     //             npm = child.spawn('npm', ['install'], {
     //                 cwd: process.cwd() + '/src'
