@@ -16,16 +16,16 @@ require('colors');
 if (argv.h || argv.help || (argv._[0] && _.contains(['h', 'help'], argv._[0]))) {
   console.log("Available Commands:".green)
   console.log("glad api [name]        # Creates a new API".yellow);
-  console.log("glad serve             # Starts the server".yellow);
-  console.log("glad run               # Runs a job or script in the same process as a new application server (on port 4243)".yellow);
+  console.log("glad serve [i]         # Starts the server, pass in i for interactive mode".yellow);
+  console.log("glad run   [i]         # Runs a job or script in the same process as a new application server (without binding to a port). Pass in i for interactive mode".yellow);
   console.log("glad -v                # Displays The Version of Glad".yellow);
   console.log("glad list [m|r]        # Displays All of the controllers, models, routes in your application. Run glad list for controllers".yellow);
   console.log("glad destroy [name]    # Destroys an API, removes the model, route, controller, and test".yellow);
 
   console.log('\nALIASES:'.green);
   console.log("glad a [name]          # glad api [name]".yellow);
-  console.log("glad s                 # glad serve".yellow);
-  console.log("glad r                 # glad run".yellow);
+  console.log("glad s [i]             # glad serve [i]".yellow);
+  console.log("glad r [i]             # glad run [i]".yellow);
   console.log("glad l [m|r]           # glad list [m|r]".yellow);
   console.log("glad d [name]          # glad destroy [name]".yellow);
 }
@@ -66,12 +66,14 @@ if (argv.l || argv.list || (argv._[0] && _.contains(['l', 'list'], argv._[0]))) 
 
 // Glad Run
 if (argv.r || argv.run || (argv._[0] && _.contains(['r', 'run'], argv._[0]))) {
-  console.log('You want to run', argv._[1], 'Jobs run on port 4243');
+  var interactive = (argv.i || argv.interactive || (argv._[2] && _.contains(['i', 'interactive'], argv._[2])));
+
   try {
 
     require(process.cwd() + '/node_modules/glad/service')(false, {
       port : 4243,
-      listen : false
+      listen : false,
+      interactive : interactive
     });
 
     setTimeout(function () {
@@ -101,7 +103,8 @@ else if (argv.p || argv.prefs || argv.preferences || argv.pref || (argv._[0] && 
 
 // If starting the server
 else if (argv.s || argv.server || argv.up || argv.u || (argv._[0] && _.contains(['s', 'server', 'up', 'u'], argv._[0]))) {
-    require(process.cwd() + '/node_modules/glad/service')(config);
+  config.interactive = (argv.i || argv.interactive || (argv._[1] && _.contains(['i', 'interactive'], argv._[1])));
+  require(process.cwd() + '/node_modules/glad/service')(config);
 }
 
 // If Creating an API

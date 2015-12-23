@@ -313,17 +313,23 @@ module.exports = function (callback, conf) {
           }
           
           require('dns').lookup(require('os').hostname(), function (err, add) {
-            console.log(' :) Glad: Server Listening On:'.green, (add + ':' + config.port.toString()).green);
-            if (errors.length) {
-                console.log(" :( Glad: Server is up with the following errors".red);
-                errors.forEach(function (err) {
-                    console.log((err.message).red);
-                });
-            }
-	  });
+              console.log(' :) Glad: Server Listening On:'.green, (add + ':' + config.port.toString()).green);
+              if (errors.length) {
+                  console.log(" :( Glad: Server is up with the following errors".red);
+                  errors.forEach(function (err) {
+                      console.log((err.message).red);
+                  });
+              }
+	        });
 
         } else {
-            console.log('Application is not bound to any port because config.listen is set to false'.green)
+            console.log('Application is not bound to any port because config.listen is set to false'.green);
+        }
+
+        if (config.interactive) {
+          console.log("Application will now run in interactive mode".green);
+          repl = require("repl");
+          r = repl.start("Glad > ".green);
         }
 
         if (callback && typeof callback === "function") {

@@ -130,7 +130,7 @@ module.exports = {
     GET: [{
         path: '/users',         // <--- what url does this entry match
         action: 'getUserList',  // <--- what controller method should handle this request
-        policy: 'authenticated' // <--- what poily applies to this route
+        policy: 'authenticated' // <--- what policy applies to this route
     },{
         path: '/users/:id',
         action: 'getUserById',
@@ -403,7 +403,10 @@ to assist you in creating your own. All with just a few lines of code. Please Re
    toProtected removes all fields that do not match the keys passed in
 ```
 
-
+## Interactive mode
+run `glad serve -i` or `glad run jobs/myjob -i` or one of their aliases (`glad -h` to see all of the available aliases).
+Your application will boot up in interactive mode, in which you can inspect globals etc.. Easily Run queries in mongoose if you set exposeModels to true
+in the `config.js` file.
 
 ## GITHUB
 * [glad](https://www.github.com/charliemitchell/glad) 
