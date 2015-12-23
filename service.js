@@ -297,21 +297,22 @@ module.exports = function (callback, conf) {
             middleware.custom(app, express);
         }
 
+        if (config.listen !== false) {
+          
+          if (hooks.onBeforeListen) {
+              verbose("Glad: Hooks :: onBeforeListen");
+              hooks.onBeforeListen(server, app, express);
+          }
 
-        if (hooks.onBeforeListen) {
-            verbose("Glad: Hooks :: onBeforeListen");
-            hooks.onBeforeListen(server, app, express);
-        }
+          // Launch server
+          server.listen(config.port || 4242);
 
-        // Launch server
-        server.listen(config.port || 4242);
-
-        if (hooks.onAfterListen) {
-            verbose("Glad: Hooks :: onAfterListen");
-            hooks.onAfterListen(server, app, express);
-        }
-
-        require('dns').lookup(require('os').hostname(), function (err, add) {
+          if (hooks.onAfterListen) {
+              verbose("Glad: Hooks :: onAfterListen");
+              hooks.onAfterListen(server, app, express);
+          }
+          
+          require('dns').lookup(require('os').hostname(), function (err, add) {
             console.log(' :) Glad: Server Listening On:'.green, (add + ':' + config.port.toString()).green);
             if (errors.length) {
                 console.log(" :( Glad: Server is up with the following errors".red);
@@ -319,7 +320,11 @@ module.exports = function (callback, conf) {
                     console.log((err.message).red);
                 });
             }
-        });
+	  });
+
+        } else {
+            console.log('Application is not bound to any port because config.listen is set to false'.green)
+        }
 
         if (callback && typeof callback === "function") {
             callback(app, express, server);

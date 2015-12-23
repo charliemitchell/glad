@@ -70,7 +70,8 @@ if (argv.r || argv.run || (argv._[0] && _.contains(['r', 'run'], argv._[0]))) {
   try {
 
     require(process.cwd() + '/node_modules/glad/service')(false, {
-      port : 4243
+      port : 4243,
+      listen : false
     });
 
     setTimeout(function () {
