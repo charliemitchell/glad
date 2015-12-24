@@ -329,7 +329,7 @@ module.exports = function (callback, conf) {
           setTimeout(function () {
             console.log("Application will now run in interactive mode".green);
             var repl = require("repl");
-            var r = repl.start("Glad > ".yellow);
+            repl.start("Glad > ".yellow);
           }, 1000);
         }
 
