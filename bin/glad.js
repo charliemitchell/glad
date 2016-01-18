@@ -80,14 +80,30 @@ if (argv.r || argv.run || (argv._[0] && _.contains(['r', 'run'], argv._[0]))) {
       try {
         require(path.join(process.cwd(), argv._[1]))();
       } catch (e) {
+        console.error(e);
         console.error("Could Not Load Job", path.join(process.cwd() , argv._[1]))
       }
     }, 5000);
+
   } catch (e) {
     console.error(e);
   }
 }
 
+// Glad Console
+if (argv.c || argv.console || (argv._[0] && _.contains(['c', 'console'], argv._[0]))) {
+    try {
+
+        require(process.cwd() + '/node_modules/glad/service')(false, {
+            port : 4243,
+            listen : false,
+            interactive : true
+        });
+
+    } catch (e) {
+        console.error(e);
+    }
+}
 
 // If Running Glad with out any args
 else if (argv._.length === 0) {

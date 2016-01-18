@@ -403,10 +403,27 @@ to assist you in creating your own. All with just a few lines of code. Please Re
    toProtected removes all fields that do not match the keys passed in
 ```
 
+## Run Command
+Use `glad run jobs/myjob` to run a script in the context of your Application. In this example, the file located at `jobs/myjob.js` will run after an instance of the server is booted up in a separate process.
+This instance will not be bound to any port, so it can not be accessed from your network. I find that it is useful for debugging, as well as setting up chron jobs. If you do opt for chron jobs, be sure to 
+terminate the process using when you are finished.
+
 ## Interactive mode
 run `glad serve -i` or `glad run jobs/myjob -i` or one of their aliases (`glad -h` to see all of the available aliases).
 Your application will boot up in interactive mode, in which you can inspect globals etc.. Easily Run queries in mongoose if you set exposeModels to true
-in the `config.js` file.
+in the `config.js` file, or via requiring in your model, then running your queries, example below...
+
+```
+// Require in model
+Glad > var myModel = require('./models/myModel');
+// Run a Query
+Glad > myModel.find().count().exec(console.log);
+// Receive output
+Glad > null 1209765
+```
+
+## Console Mode
+run `glad console` or `glad c` for short and you will enter into console mode which is similar to Interactive mode, But does not bind to any port or require a file to run.
 
 ## GITHUB
 * [glad](https://www.github.com/charliemitchell/glad) 
