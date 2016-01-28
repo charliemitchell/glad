@@ -249,7 +249,7 @@ Glad comes packaged with some built in validations for your models.
 We use Google's Caja *(the sanitize package)* as the default sanitizer. We have built in some really convienient transforms for you to use to help you reduce your time spent validating and transforming input. 
 
 |setter| Input | Output|
-|---:|:---|
+|---:|:---|:---|
 |`lowerCase`| <span style="font-size:12px">Myemail@Mail.com</span>| myemail@mail.com|
 |`upperCase`| <span style="font-size:12px">acme inc</span>| ACME INC|
 |`titleCase`| <span style="font-size:12px">acme inc</span>| Acme Inc|
