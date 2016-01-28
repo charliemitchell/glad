@@ -383,16 +383,15 @@ Some basic tests are written for you, any route that you generate will be tested
 
 ## Additional Commands
 
-|||
-| ------------- |:-------------:|
-| `glad --help` | will display a list of all available commands |
-| `glad list`   | will display a list of all controllers|
-| `glad list m` | will display a list of all models|
-| `glad list r`  | will display a list of all routes|
-| `glad set port 1234` | will change the port to 1234 in your config file,(and your dockerfile if you have one). (you can pass in any number for your port)|
-|`glad p --editor=subl` | will set the default editor for your projects to sublime. (This should be the bash command used to open your editor) (in bash: subl .)|
-|`glad p --editor=atom` | will set the default editor for your projects to atom (provided that atom's binary is symlinked). (This should be the bash command used to open your editor) (in bash: atom .)|
-
+| | |
+| ---: |:--- |
+| `glad --help` | <span style="font-size:12px">will display a list of all available commands</span> |
+| `glad list`   | <span style="font-size:12px">will display a list of all controllers</span>|
+| `glad list m` | <span style="font-size:12px">will display a list of all models</span>|
+| `glad list r`  | <span style="font-size:12px">will display a list of all routes</span>|
+| `glad set port 1234` | <span style="font-size:12px">will change the port to 1234 in your config file,(and your dockerfile if you have one).</span>|
+|`glad p --editor=subl` | <span style="font-size:12px">will set the default editor for your projects to sublime.)</span>|
+|`glad p --editor=atom` | <span style="font-size:12px">will set the default editor for your projects to atom</span> |
 
 
 ## Don't Forget... 
