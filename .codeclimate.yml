@@ -1,5 +1,6 @@
 languages:
   JavaScript: true 
 exclude_paths:
-- "bin/template"
-- "blueprint_templates"
+- "bin/template/"
+- "blueprint_templates/"
+- "bin/template/test.js"
