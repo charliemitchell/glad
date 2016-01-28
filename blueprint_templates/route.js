@@ -3,7 +3,7 @@ module.exports = {
     GET : [{
         path : '/{{model}}',
         action : 'GET',
-        // policy : 'authenticated'
+        policy : 'authenticated'
     },{
         path : '/{{model}}/:id',
         action : 'findOne',
@@ -11,24 +11,24 @@ module.exports = {
     },{
         path : '/{{model}}/:id/*',
         action : 'scaffold',
-        // policy : 'authenticated'
+        policy : 'authenticated'
     }],
     
     POST : [{
         path : '/{{model}}',
         action : 'POST',
-        // policy : 'authenticated'
+        policy : 'authenticated'
     }],
     
     PUT : [{
         path : '/{{model}}/:id',
         action : 'PUT',
-        // policy : 'authenticated'
+        policy : 'authenticated'
     }],
 
     DELETE : [{
         path : '/{{model}}/:id',
         action : 'DELETE',
-        // policy : 'authenticated'
+        policy : 'authenticated'
     }]
 }

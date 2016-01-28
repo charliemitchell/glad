@@ -1,7 +1,7 @@
 module.exports = {
     
-    onFailure : function (req, res) {
-        res.status(403).json({auth : false, error : "Not Logged In"});
+    onFailure : function (req, res, message) {
+        res.status(403).json({auth : false, error : message || "Not Logged In"});
     },
 
     authenticated : function (req, res, accept, reject) {

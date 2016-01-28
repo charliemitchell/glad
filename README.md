@@ -20,28 +20,32 @@
 
 ## Running / Development
 
-*  to create a new glad server
- * Create a Folder Named foo: `glad new foo` OR  `mkdir foo`
- * Go Inside the folder: `cd foo`
- * Generate an endpoint for the route bar: `glad api bar && cd src`
- * Start The Server: `glad s` Or run the tests `npm test`
-* Visit your app at [http://localhost:4242/bar](http://localhost:4242/bar).
+## Quick Start
+Step 1: `mkdir <your-app> && cd <your-app>`
+<br>
+Step 2: `glad api users && cd src`
+<br>
+Step 3: `glad s`
+<br>
+You're up and running
 
-## Some Built In Validations
-Glad comes packaged with some built in validations for your model. We use Google's Caja (the sanitize package) as the default sanitizer, furthermore we have built in some really nice features around the mongoose setter. So far we have provided some common transformations.
-* sentence case
- * lor ipsom. dol amore. --> Lor ipsom. Dol amore. 
-* lower case
- * Myemail@Mail.com --> myemail@mail.com
-* upper case
- * acme inc --> ACME INC
-* title case
- * acme inc --> Acme Inc
-* number
- * '1234' --> 1234 
-* sanitize
+## Detailed Start
+Step 1: Create a new directory for your app. We'll call it "widget-api" for now   `mkdir widget-api`
+<br>
+Step 2: Navigate inside the new directory you just created.                       `cd widget-api`
+<br>
+Step 3: Create a new Glad App                                                     `glad init`
+<br>
+Step 4: Navigate to the newly created src directory.                              `cd src`
+<br>
+Step 5: Generate a New API endpoint for your widgets app                          `glad api users`
+<br>
+Step 6: Boot up the server                                                        `glad s`
+<br>
+Visit your app at [http://localhost:4242/users](http://localhost:4242/users). You should get an empty JSON array back. 
+This means that your users api is up and running, there is just no data in the database. See the section on defining your models to continue and be able to create new users.
 
-## Mimimal setup required...
+
 ### Open your config file... (Already set up to defaults)
 ```js
     //....
@@ -103,10 +107,11 @@ module.exports = {
     onFailure : function (req, res) {
         res.json({auth : false, error : "Not Logged In"}); // <---- What do you do when they are not logged in
     },
-
+    
+    // This method is intentionally overly verbose with the nested if/else statements, hopefully this makes it clear what is happening.
     authenticated : function (req, res, accept, reject) {
         if (req.session) {
-            if (req.session.loggedin) { // <--- what key on the session say's they are logged in ?
+            if (req.session.authenticated) { // <--- what key on the session say's they are logged in ?
                 accept(); // accept the request, all is good
             } else {
                 reject(); // reject the request, this will end up calling the above onFailure method
@@ -114,16 +119,42 @@ module.exports = {
         } else {
             reject(); 
         }
-    }
+    },
 
-    // <--- add additional policies if needed
+    // <--- add additional policies if needed, Examples Below....
+    isDeveloper : function (req, res, accept, reject) { 
+        if (req.session && req.session.developer) {
+            accept();
+        } else {
+            reject("You are not allowed to access this API"); 
+        }
+    },
+    
+    // Note this policy requires you to follow the convention /api/resource/:id
+    resourceOwnerOrAdmin : function (req, res, accept, reject) {
+
+        if (!req.params) {
+            return reject("Incorrect Parameters: Missing Parameters");
+        } else if (!req.params.id) {
+            return reject("Incorrect Parameters: Missing ID");
+        }
+
+        if (isAuthenticated(req)) {
+            if (req.session.user.admin) {
+                accept();
+            } else if (req.session.user.id === req.params.id) {
+                accept();
+            } else {
+                reject("You don't have access to this content");
+            }
+        } else {
+            reject("You must be logged in to do that.");
+        }
+    }
 };
 ```
 
-### More fine grained control.
-The Hooks File Provides hooks that fire while your server is being constructed. You can acess the app object as well as the express object using these hooks. This way if you need to extend the app object before or after a specific "app.use" you can do this here. The hooks object will fire sequentially from top to bottom so it makes it easy to figure out in what order the app is being configured, as well as at what point you would like to extend the app object.
-
-## Routing
+### Routing
 Routing is centered around REST. In the routes folder file you will find your routes. The routes object is organized by request method. this will eventually make it's way to the express router.
 ```js
 module.exports = {
@@ -134,7 +165,7 @@ module.exports = {
     },{
         path: '/users/:id',
         action: 'getUserById',
-        policy: 'authenticated'
+        policy: 'resourceOwnerOrAdmin' // <--- Not built in, but in the policies example above
     }],
 
     POST: [{
@@ -157,14 +188,111 @@ module.exports = {
     }]
 }
 ```
-As you can see you have an array of Get, Post, Put, Delete methods. the combination of request method and url are used to determine the action to take, and the policy to implement. 
+As you can see you have an array of Get, Post, Put, Delete methods. 
+The combination of request method and url are used to determine the action to take, and the policy to implement. 
+
 * path : matching url
 * action : the controller method to call when this route is matched
 * policy : the policy method to call in order to determine if the action is allowed. * see policies.js
 
+---
+
+## More fine grained control.
+The Hooks File Provides hooks that fire while your server is being constructed. 
+You can access the app object as well as the express object using these hooks. 
+This way if you need to extend the app object before or after a specific "app.use" you can do this here. 
+The hooks object template will fire sequentially from top to bottom so it makes it easy to figure out in what order the app is being configured, 
+as well as at what point you would like to extend the app object. All of your hooks with the exception of the `onAfterListen` Hook receive a callback
+method that you must invoke in order for your app to finish it's booting process.
+
+---
+
+## Run Command
+Use `glad run jobs/myjob` to run a script in the context of your Application. In this example, the file located at `jobs/myjob.js` will run after an instance of the server is booted up in a separate process.
+This instance will not be bound to any port, so it can not be accessed from your network. I find that it is useful for debugging, as well as setting up chron jobs. If you do opt for chron jobs, be sure to 
+terminate the process using when you are finished.
+
+---
+
+## Interactive mode
+`glad serve -i` or `glad run jobs/myjob -i` will boot up the server in interactive mode (repl).
+
+Once your application is in interactive mode you will have console access to your app so you can inspect globals, run queries in mongoose, debug, and do anything you want to.
+
+
+#### Example of running a query in interactive mode...
+```
+// Require in model
+var Users = require('./models/users');
+// Run a Query
+Users.find().count().exec(console.log);
+// Receive output
+null 1209765
+```
+#### You can make this easier by setting exposeGlobals to true in your config file
+```
+// Run a Query
+Users.find().count().exec(console.log);
+// Receive output
+null 1209765
+```
+---
+
+## Console Mode
+run `glad console` or `glad c` for short and you will enter into console mode which is similar to Interactive mode, But does not bind to any port or require a file to run.
+If you are familiar with ruby, then this is similar to running the rails console. Just like running `glad serve -i` you will have console access to your app. But this will behave more similarly to the `glad run` command because your application will not bind to any port. <b>You can run</b> `glad console` <b>while</b> `glad serve` <b>is running!</b> You can also have multiple glad consoles open along with `glad run` jobs as well. They all run independently of each other.
+
+
+## Built In Validations
+Glad comes packaged with some built in validations for your models. 
+
+We use Google's Caja *(the sanitize package)* as the default sanitizer. We have built in some really convienient transforms for you to use to help you reduce your time spent validating and transforming input. 
+
+|setter| Input | Output|
+|---:|:---|
+|`lowerCase`| <span style="font-size:12px">Myemail@Mail.com</span>| myemail@mail.com|
+|`upperCase`| <span style="font-size:12px">acme inc</span>| ACME INC|
+|`titleCase`| <span style="font-size:12px">acme inc</span>| Acme Inc|
+|`sentenceCase`| <span style="font-size:12px">lor ipsom. dol amore.</span>| Lor ipsom. Dol amore.|
+|`number`| <span style="font-size:12px">"36"</span>| 36|
+|`sanitize`| <span style="font-size:12px">"foo bar &lt;script&gt;alert('XSS')&lt;/script&gt;"</span>| "foo bar"|
+|`safe.lowerCase`| <span style="font-size:12px">Myemail@Mail.com&lt;script&gt;alert('XSS')&lt;/script&gt;</span>|myemail@mail.com|
+|`safe.upperCase`| <span style="font-size:12px">acme inc &lt;script&gt;alert('XSS')&lt;/script&gt;</span>| ACME INC|
+|`safe.titleCase`| <span style="font-size:12px">acme inc &lt;script&gt;alert('XSS')&lt;/script&gt;</span>|Acme Inc|
+|`safe.sentenceCase`| <span style="font-size:12px">lor ipsom. dol amore. &lt;script&gt;alert('XSS')&lt;/script&gt;</span>| Lor ipsom. Dol amore.
+|`safe.number`| <span style="font-size:12px">"36&lt;script&gt;alert('XSS')&lt;/script&gt;"</span>| 36|
+
+---
+
+ #### Using the sanitizer in your models
+ ```javascript
+ // Lets create a simple User Model
+ var UserModel = new Schema({
+   name : {
+     type : String,
+     set : setter.sanitize,
+     required : true,
+     policy : 'resourceOwnerOrAdmin' // <-- We'll get to this shortly
+   },
+   email : {
+     type : String,
+     set : setter.safe.lowerCase,
+     required : true,
+     policy : 'resourceOwnerOrAdmin'
+   },
+   active : {
+     type : Boolean,
+     policy : 'systemOnly'
+   }
+ });
+ ```
+ As you can see, to apply the transform you use the set key. From now on, whenever you update your model these transforms will automatcally ensure your data fits the mold.
+
+---
 
 ### Glad Exposes any of it's dependencies or tools to you via the glad object.
-```js
+```
+
     require('glad').mongoose  // <-- the mongoose ODM
     require('glad').colors    // <-- colors for your logs
     require('glad').lodash    // <-- similar to underscore, with a few enhancements
@@ -188,6 +316,8 @@ As you can see you have an array of Get, Post, Put, Delete methods. the combinat
     require('glad').dataVersions    // <-- Data versioning class for model data.
 
 ```
+
+---
 
 ### The Utility Class
 For now, there are a few utility methods. I'll work on rollling out much more, soon. I take requests!
@@ -217,25 +347,56 @@ If you are using docker, glad will automatically generate a Dockerfile for you. 
 ## Vagrant
 Glad will auto generate a Vagrant file with Ubuntu as part of the default blueprint. It also includes a bootstrap.sh file that will run when Vagrant Creates your VM. By Default it installs docker.
 
-## Stubs (Blueprinting) *NOT READY QUITE YET
-With Glad you can create stubs and generate new services based on any template you would like. The templating is very straight forward. See the blueprints folder to see what a blueprint looks like.
-* To Generate a service from a blueprint
-* `glad stub /path/to/stub/ --model users`
+## Stubs (Blueprinting) 
+With Glad you can create stubs and generate new APIs based on any template you would like. This is especially useful if you use a javascript preprocessor. 
+The template syntax is very straight forward. 
+See the blueprints_templates folder to see what a blueprint looks like, or copy the contents and use it as a starting place. 
+In your blueprint folder you will have the option to include 4 files that glad knows how to deal with.
 
-This will (recursively) copy all files from the path given to the current working directory, and fill in all of the template variables with the name of the model given.
+```
+--- myBlueprint
+------ model.js
+------ controller.js
+------ route.js
+------ test.js
+```
+
+All of the files are not required. If any of the files are missing, Glad will substitute it for the default template.  
+
+### To Generate an API from a blueprint run... 
+
+`glad stub [path] --model [model]`
+
+### As an example 
+
+`glad stub /path/to/stub/ --model users`
+
+This would create a new API using your blueprint (stub) and pass in the model name `users ` to the stub compiler.
+
+This will generate an API based on your blueprint.
 
 ## Testing
-Some basic tests are written for you, any route that you define in the router will be tested when running npm test. You should run your tests from the src directory.
+Some basic tests are written for you, any route that you generate will be tested when running npm test. You must run your tests from the src directory. 
+
+`cd src && npm test` 
+<i style="font-size:10px">( if your current working directory is in your project root)</i>
 
 ## Additional Commands
-`glad set port 1234` will change the port to 1234 in your config file, (and your dockerfile if you have one). (you can pass in any number for your port)
 
-`glad p --editor=subl` will set the default editor for your projects to sublime. (This should be the bash command used to open your editor) (in bash: subl .)
+|||
+| ------------- |:-------------:|
+| `glad --help` | will display a list of all available commands |
+| `glad list`   | will display a list of all controllers|
+| `glad list m` | will display a list of all models|
+| `glad list r`  | will display a list of all routes|
+| `glad set port 1234` | will change the port to 1234 in your config file,(and your dockerfile if you have one). (you can pass in any number for your port)|
+|`glad p --editor=subl` | will set the default editor for your projects to sublime. (This should be the bash command used to open your editor) (in bash: subl .)|
+|`glad p --editor=atom` | will set the default editor for your projects to atom (provided that atom's binary is symlinked). (This should be the bash command used to open your editor) (in bash: atom .)|
 
-`glad p --editor=atom` will set the default editor for your projects to atom (provided that atom's binary is symlinked). (This should be the bash command used to open your editor) (in bash: atom .)
 
-## Common Mistakes
-* You must use a Content-Type header in your request, otherwise the body will never get parsed.
+
+## Don't Forget... 
+* To use a Content-Type header in your POST and PUT requests, otherwise the body will never get parsed.
 
 
 ## How To's
@@ -369,7 +530,7 @@ to assist you in creating your own. All with just a few lines of code. Please Re
  
   Example of Using The extend feature
  ```
-   // Best to do this during bootstrapping
+   // Best to do this in your initializer
  
    var dataVersions = require('glad').dataVersions;
  
@@ -402,28 +563,6 @@ to assist you in creating your own. All with just a few lines of code. Please Re
    removeStuff removes all fields that match the keys passed in,
    toProtected removes all fields that do not match the keys passed in
 ```
-
-## Run Command
-Use `glad run jobs/myjob` to run a script in the context of your Application. In this example, the file located at `jobs/myjob.js` will run after an instance of the server is booted up in a separate process.
-This instance will not be bound to any port, so it can not be accessed from your network. I find that it is useful for debugging, as well as setting up chron jobs. If you do opt for chron jobs, be sure to 
-terminate the process using when you are finished.
-
-## Interactive mode
-run `glad serve -i` or `glad run jobs/myjob -i` or one of their aliases (`glad -h` to see all of the available aliases).
-Your application will boot up in interactive mode, in which you can inspect globals etc.. Easily Run queries in mongoose if you set exposeModels to true
-in the `config.js` file, or via requiring in your model, then running your queries, example below...
-
-```
-// Require in model
-Glad > var myModel = require('./models/myModel');
-// Run a Query
-Glad > myModel.find().count().exec(console.log);
-// Receive output
-Glad > null 1209765
-```
-
-## Console Mode
-run `glad console` or `glad c` for short and you will enter into console mode which is similar to Interactive mode, But does not bind to any port or require a file to run.
 
 ## GITHUB
 * [glad](https://www.github.com/charliemitchell/glad) 

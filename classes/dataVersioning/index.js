@@ -97,11 +97,9 @@
  */
 
 // Built In Versions
-var VERSIONS = {
-    systemData  : require('./models/removeSystemData'),
-    privateData : require('./models/removePrivateData'),
-    minimalData : require('./models/to_minimal')
-};
+global._GLAD_DATA_VERSIONS.systemData  = require('./models/removeSystemData');
+global._GLAD_DATA_VERSIONS.privateData = require('./models/removePrivateData');
+global._GLAD_DATA_VERSIONS.minimalData = require('./models/to_minimal');
 
 
 module.exports = {
@@ -127,17 +125,19 @@ module.exports = {
         };
 
         Object.keys(versions).forEach(function (key) {
-            if (versions.hasOwnProperty(key) && VERSIONS[key]) {
-                VERSIONS[key](schema, versions[key])
+            if (versions.hasOwnProperty(key) && global._GLAD_DATA_VERSIONS[key]) {
+                global._GLAD_DATA_VERSIONS[key](schema, versions[key])
             } else {
-                console.log("Could not create the data version for " + key);
+                console.log("---------------------------------------------------------------".red);
+                console.log((" !!! Could not create the data version for " + key).red);
+                console.log("---------------------------------------------------------------".red);
             }
         });
 
     },
 
     extend : function (name, model) {
-        VERSIONS[name] = model;
+        global._GLAD_DATA_VERSIONS[name] = model;
     },
 
     keyDifference : require('./helpers/keyDifference'),

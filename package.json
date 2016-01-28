@@ -1,11 +1,11 @@
 {
   "name": "glad",
   "main": "./lib/index.js",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "A Node Js API Framework to effortlessly generate REST API's. Built on top of express, and mongoose.",
   "author": "Charlie Mitchell <charliesemailis@gmail.com>",
   "license": "MIT",
-  "keywords" : ["express framework", "api", "apis", "framework", "api only", "mongoose", "express", "node api", "REST", "rest generator", "blueprint", "scaffold", "Restful", "glad", "glad api"],
+  "keywords" : ["express framework", "api", "apis", "framework", "api only", "mongoose", "express", "api framework", "node api", "REST", "rest generator", "blueprint", "scaffold", "Restful", "glad", "glad api"],
 
   "bugs": {
     "url": "http://github.com/charliemitchell/glad",

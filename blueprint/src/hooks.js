@@ -1,32 +1,35 @@
 module.exports = {
-    app : function (server, app, express) {
-        
+
+    app : function (server, app, express, next) {
+        next();
     },
 
-    onBeforeMongoose : function (mongoose, app, express) {
-
+    onBeforeMongoose : function (mongoose, server, app, express, next) {
+        next();
     },
 
-    onBeforeBodyParser : function (server, app, express) {
-        /* Hint:
-            If you would like to add add additional body parsers before the one in your config file,
-            Do it here.
-         */
+    onBeforeBodyParser : function (server, app, express, next) {
+        next();
     },
 
-    onBeforeMethodOverride : function (server, app, express) {
-
-    },
-    
-    onBeforeCookieParser : function (server, app, express) {
-
+    onBeforeMethodOverride : function (server, app, express, next) {
+        next();
     },
 
-    onBeforeRouter : function (server, app, express) {
-
+    onBeforeCookieParser : function (server, app, express, next) {
+        next();
     },
-    onBeforeListen : function (server, app, express) {
 
+    onBeforeReadSession : function (server, app, express, next) {
+        next();
+    },
+
+    onBeforeRouter : function (server, app, express, next) {
+        next();
+    },
+
+    onBeforeListen : function (server, app, express, next) {
+        next();
     },
     onAfterListen : function (server, app, express) {
 
