@@ -384,7 +384,7 @@ Some basic tests are written for you, any route that you generate will be tested
 ## Additional Commands
 
 |||
-| ------------- |:-------------:|
+| -----------------------:|:---|
 | `glad --help` | will display a list of all available commands |
 | `glad list`   | will display a list of all controllers|
 | `glad list m` | will display a list of all models|
