@@ -81,7 +81,7 @@ This means that your users api is up and running, there is just no data in the d
     // etc..
 ```
 
-### Now Open Up your Model File 
+### Now open up your model file 
 (This will be pre-generated, all you have to do is define your model)
 
 ```js
@@ -99,29 +99,29 @@ This means that your users api is up and running, there is just no data in the d
     });
 ```
 
-### Lastly Setup your Policy,
-(this is also pre-generated)
+### Lastly, setup your policy.
+(this is also pre-generated) `src/policies.js`
 ```js
 module.exports = {
     
     onFailure : function (req, res) {
-        res.json({auth : false, error : "Not Logged In"}); // <---- What do you do when they are not logged in
+        res.json({auth : false, error : "Not Logged In"}); 
     },
     
-    // This method is intentionally overly verbose with the nested if/else statements, hopefully this makes it clear what is happening.
+    // This method is intentionally overly verbose with the nested if/else statements. Hopefully this makes it clear what is happening.
     authenticated : function (req, res, accept, reject) {
         if (req.session) {
-            if (req.session.authenticated) { // <--- what key on the session say's they are logged in ?
-                accept(); // accept the request, all is good
+            if (req.session.authenticated) { // <--- What value on the session says they are logged in?
+                accept(); // Accept the request. All is good
             } else {
-                reject(); // reject the request, this will end up calling the above onFailure method
+                reject(); // Reject the request. This will end up calling the above on failure method.
             }
         } else {
             reject(); 
         }
     },
 
-    // <--- add additional policies if needed, Examples Below....
+    // <--- Add additional policies if needed. Examples below....
     isDeveloper : function (req, res, accept, reject) { 
         if (req.session && req.session.developer) {
             accept();
@@ -130,7 +130,7 @@ module.exports = {
         }
     },
     
-    // Note this policy requires you to follow the convention /api/resource/:id
+    // Note: This policy requires you to follow the convention /api/resource/:id
     resourceOwnerOrAdmin : function (req, res, accept, reject) {
 
         if (!req.params) {
@@ -139,7 +139,7 @@ module.exports = {
             return reject("Incorrect Parameters: Missing ID");
         }
 
-        if (isAuthenticated(req)) {
+        if (req.session && req.session.authenticated) {
             if (req.session.user.admin) {
                 accept();
             } else if (req.session.user.id === req.params.id) {
@@ -155,41 +155,41 @@ module.exports = {
 ```
 
 ### Routing
-Routing is centered around REST. In the routes folder file you will find your routes. The routes object is organized by request method. this will eventually make it's way to the express router.
+Routing is centered around REST. In the routes folder file you will find your routes. The routes object is organized by request method.
 ```js
 module.exports = {
     GET: [{
-        path: '/users',         // <--- what url does this entry match
-        action: 'getUserList',  // <--- what controller method should handle this request
-        policy: 'authenticated' // <--- what policy applies to this route
+        path: '/users',         // <--- what url does this entry match?
+        action: 'GET',  // <--- what controller method should handle this request?
+        policy: 'authenticated' // <--- what policy applies to this route?
     },{
         path: '/users/:id',
-        action: 'getUserById',
-        policy: 'resourceOwnerOrAdmin' // <--- Not built in, but in the policies example above
+        action: 'findOne',
+        policy: 'resourceOwnerOrAdmin' // <--- Not built in, but in the policies example above.
     }],
 
     POST: [{
         path: '/users',
-        action: 'createUser',
+        action: 'POST',
         policy: 'authenticated'
     }],
 
 
     PUT: [{
         path: '/users/:id',
-        action: 'updateUser',
+        action: 'PUT',
         policy: 'authenticated'
     }],
 
     DELETE: [{
         path: '/users/:id',
-        action: 'deleteUser',
+        action: 'DELETE',
         policy: 'authenticated'
     }]
 }
 ```
-As you can see you have an array of Get, Post, Put, Delete methods. 
-The combination of request method and url are used to determine the action to take, and the policy to implement. 
+As you can see, you have an array of Get, Post, Put, and Delete methods. 
+The combination of request method and url are used to determine the action to take and the policy to implement. 
 
 * path : matching url
 * action : the controller method to call when this route is matched
@@ -197,30 +197,30 @@ The combination of request method and url are used to determine the action to ta
 
 ---
 
-## More fine grained control.
-The Hooks File Provides hooks that fire while your server is being constructed. 
+## Fine Grained Control with Hooks.
+The Hooks file provides hooks that fire while your server is being constructed. 
 You can access the app object as well as the express object using these hooks. 
 This way if you need to extend the app object before or after a specific "app.use" you can do this here. 
 The hooks object template will fire sequentially from top to bottom so it makes it easy to figure out in what order the app is being configured, 
-as well as at what point you would like to extend the app object. All of your hooks with the exception of the `onAfterListen` Hook receive a callback
-method that you must invoke in order for your app to finish it's booting process.
+as well as at what point you would like to extend the app object. All of your hooks, with the exception of the `onAfterListen` hook, receive a callback
+method that you must invoke in order for your app to finish its booting process.
 
 ---
 
 ## Run Command
-Use `glad run jobs/myjob` to run a script in the context of your Application. In this example, the file located at `jobs/myjob.js` will run after an instance of the server is booted up in a separate process.
+Use `glad run jobs/myjob` to run a script in the context of your application. In this example, the file located at `jobs/myjob.js` will run after an instance of the server is booted up in a separate process.
 This instance will not be bound to any port, so it can not be accessed from your network. I find that it is useful for debugging, as well as setting up chron jobs. If you do opt for chron jobs, be sure to 
-terminate the process using when you are finished.
+terminate the process when you are finished.
 
 ---
 
-## Interactive mode
+## Interactive Mode
 `glad serve -i` or `glad run jobs/myjob -i` will boot up the server in interactive mode (repl).
 
 Once your application is in interactive mode you will have console access to your app so you can inspect globals, run queries in mongoose, debug, and do anything you want to.
 
 
-#### Example of running a query in interactive mode...
+#### Example of running a query in interactive mode
 ```
 // Require in model
 var Users = require('./models/users');
@@ -240,13 +240,13 @@ null 1209765
 
 ## Console Mode
 run `glad console` or `glad c` for short and you will enter into console mode which is similar to Interactive mode, But does not bind to any port or require a file to run.
-If you are familiar with ruby, then this is similar to running the rails console. Just like running `glad serve -i` you will have console access to your app. But this will behave more similarly to the `glad run` command because your application will not bind to any port. <b>You can run</b> `glad console` <b>while</b> `glad serve` <b>is running!</b> You can also have multiple glad consoles open along with `glad run` jobs as well. They all run independently of each other.
+If you are familiar with Rails, then this is similar to running the Rails console. Just like running `glad serve -i` you will have console access to your app. But this will behave more similarly to the `glad run` command because your application will not bind to any port. <b>You can run</b> `glad console` <b>while</b> `glad serve` <b>is running!</b> You can also have multiple Glad consoles open along with `glad run` jobs as well. They all run independently of each other.
 
 
 ## Built In Validations
 Glad comes packaged with some built in validations for your models. 
 
-We use Google's Caja *(the sanitize package)* as the default sanitizer. We have built in some really convienient transforms for you to use to help you reduce your time spent validating and transforming input. 
+We use Google's Caja *(the sanitize package)* as the default sanitizer. We have built in some really convienient transforms for you to use to help you reduce the time spent validating and transforming input. 
 
 |setter| Input | Output|
 |---:|:---|:---|
@@ -290,7 +290,7 @@ We use Google's Caja *(the sanitize package)* as the default sanitizer. We have 
 
 ---
 
-### Glad Exposes any of it's dependencies or tools to you via the glad object.
+### Glad Exposes any of its dependencies or tools to you via the glad object.
 ```
 
     require('glad').mongoose  // <-- the mongoose ODM
@@ -320,7 +320,7 @@ We use Google's Caja *(the sanitize package)* as the default sanitizer. We have 
 ---
 
 ### The Utility Class
-For now, there are a few utility methods. I'll work on rollling out much more, soon. I take requests!
+For now, there are a few utility methods. We'll work on rollling out much more, soon. We take requests!
 ```js
     var utility = require('glad').utility,
         object = utility.object;
@@ -343,15 +343,15 @@ For now, there are a few utility methods. I'll work on rollling out much more, s
 ```
 
 ## Docker
-If you are using docker, glad will automatically generate a Dockerfile for you. If Not, Just ignore it.
+If you are using Docker, Glad will automatically generate a Dockerfile for you. If not, just ignore it.
 ## Vagrant
-Glad will auto generate a Vagrant file with Ubuntu as part of the default blueprint. It also includes a bootstrap.sh file that will run when Vagrant Creates your VM. By Default it installs docker.
+Glad will auto generate a Vagrant file with Ubuntu as part of the default blueprint. It also includes a bootstrap.sh file that will run when Vagrant Creates your VM. By Default it installs Docker.
 
 ## Stubs (Blueprinting) 
-With Glad you can create stubs and generate new APIs based on any template you would like. This is especially useful if you use a javascript preprocessor. 
+With Glad, you can create stubs and generate new APIs based on any template you would like. This is especially useful if you use a Javascript preprocessor. 
 The template syntax is very straight forward. 
-See the blueprints_templates folder to see what a blueprint looks like, or copy the contents and use it as a starting place. 
-In your blueprint folder you will have the option to include 4 files that glad knows how to deal with.
+See the `blueprints_templates` folder to see what a blueprint looks like or copy the contents and use it as a starting place. 
+In your blueprint folder you will have the option to include 4 files that Glad knows how to deal with.
 
 ```
 --- myBlueprint
@@ -376,10 +376,10 @@ This would create a new API using your blueprint (stub) and pass in the model na
 This will generate an API based on your blueprint.
 
 ## Testing
-Some basic tests are written for you, any route that you generate will be tested when running npm test. You must run your tests from the src directory. 
+Some basic tests are written for you and any route that you generate will be tested when running `npm test`. You must run your tests from the src directory. 
 
 `cd src && npm test` 
-<i style="font-size:10px">( if your current working directory is in your project root)</i>
+<i style="font-size:10px">(if your current working directory is in your project root)</i>
 
 ## Additional Commands
 
@@ -399,7 +399,7 @@ Some basic tests are written for you, any route that you generate will be tested
 * To use a Content-Type header in your POST and PUT requests, otherwise the body will never get parsed.
 
 
-## How To's
+## How To:
 #### Create a session
 
 ```js
@@ -477,16 +477,16 @@ module.exports = {
 #### Data Versioning using glad.dataVersions
 In most cases you will find yourself transforming models to ensure only the allowed data gets sent out of a request. 
 with `glad.dataVersions` you can compose these transforms very easily in the model. There are a few built in transforms, as well as some tools 
-to assist you in creating your own. All with just a few lines of code. Please Read The following.
+to assist you in creating your own, all with just a few lines of code. Please read the following.
 
 ```
- /* Each Model Version should accept a boolean value as it's first parameter that determines whether or not to perform the operation or just return the keys
- * that would be excluded from it's resulting transform. This is so that the main method can chain multiple calls to transform the document.
+ /* Each Model Version should accept a boolean value as its first parameter that determines whether or not to perform the operation or just return the keys
+ * that would be excluded from its resulting transform. This is so that the main method can chain multiple calls to transform the document.
  *
  * The instance methods must accept an array of keys in which to apply the transform to. The method must support dot delimited object path key naming.
  * This way an engineer will be able to pass in key names like ["foo.bar", "baz", "free.bee.tree.knee"]
  *
- * Also Be aware that a naming convention should be in place here. If you create a new "Version" Then the key to describe it should be Camel Cased.
+ * Also, be aware that a naming convention should be in place here. If you create a new "Version" then the key to describe it should be Camel Cased.
  * Furthermore, the same name should be used as the filter name ("Version Name"), with the exception where the describing key (in the schema) defines data that should be removed.
  * For example:
  */
@@ -513,7 +513,7 @@ to assist you in creating your own. All with just a few lines of code. Please Re
    // It will either remove the field that has the "describing key" or it will only include fields containing the describing key.
  
    // It is important to note that describing key array includes elements that "DESCRIBE" the key. For instance, systemData : ['boost']
-   // suggests that boost is a computed property of the systemData data structure. Therefore a method named removeSystemData will provide
+   // suggests that boost is a computed property of the systemData data structure. Therefore, a method named removeSystemData will provide
    // the inverse of the systemData data structure. Likewise, a method named toSystemData would provide just the systemData data structure.
  
   ```
@@ -528,20 +528,19 @@ to assist you in creating your own. All with just a few lines of code. Please Re
  
   ```
  
-  Example of Using The extend feature
+  #### Example of Using The extend feature 
+  *Best to do this in your initializer*
  ```
-   // Best to do this in your initializer
- 
    var dataVersions = require('glad').dataVersions;
  
-   // When Key Array points to keys that should be removed
+   // When the keys array points to keys that should be removed
    var myExtension = function (schema, keys) {
         schema.methods.removeStuff = new dataVersions.modelFromDeselectionArray(keys);
     };
     dataVersions.extend('removeStuff', myExtension);
  
  
-   // When Keys Array points to keys that make up the version
+   // When the keys array points to keys that make up the version
    var myExtension = function (schema, keys) {
         var deselection = dataVersions.keyDifference (keys, schema.tree, 'getter');
         schema.methods.toProtected = new dataVersions.modelFromDeselectionArray(deselection);
@@ -549,7 +548,7 @@ to assist you in creating your own. All with just a few lines of code. Please Re
    dataVersions.extend('toProtected', myExtension);
  
  
-   // ... Then Somewhere else, in some other file
+   // ... Then somewhere else, in some other file
  
    var dataVersions = require('glad').dataVersions;
    dataVersions.create({
@@ -564,5 +563,131 @@ to assist you in creating your own. All with just a few lines of code. Please Re
    toProtected removes all fields that do not match the keys passed in
 ```
 
-## GITHUB
-* [glad](https://www.github.com/charliemitchell/glad) 
+---
+
+# Detailed Overview of the Controller
+Your controller is setup with some default <b>REST API handlers.</b> 
+You can always add more or create your own blueprint for what makes sense to you. However, this is a great starting place, as it gives you a fully functioning API for your resource and from there you can just add in additional functionality as needed.
+
+It is worth mentioning that the policies used in your route file handle authorizing access to the controllers. This way you should not need to implement access control in a controller and it can always be assumed that the request has access to your controller logic.
+
+## GET
+The GET method is in place to handle routes like `/widgets`
+The default code will query the widgets collection for a list of all your widgets, 
+and respond with a list of widgets in JSON format.
+
+You would be advised to modify the query to implement limiting, query strings etc... 
+
+Query strings are available in the request object.  
+In a nutshell, if you hit `/widgets?limit=10&search=widget-2000`
+you would get these query paramters from the `req.query`.
+```
+  //etc...
+  GET : function (req, res) {
+  	var limit = req.query.limit || 20,
+    	search = req.query.search || "";
+    // ---> etc...
+  },
+    //etc...
+```
+
+## findOne
+The findOne method is in place to handle routes like `/widgets/:id`
+The default code will query the widgets collection for the widget with the id that was passed in the url as `req.params.id`, then respond with it in JSON format.
+
+## scaffold
+#### Every piece of data has a unique URL.
+The scaffold method is in place for handling routes like `widgets/:id/desc`, where desc is a property of widget.
+For example, say we have the following widget document. <span style="font-size:11px">(The id is shortened, and an object is represented instead of JSON for the purposes of documenting)</span>
+```
+{
+  id : "h38d7g",
+  name : "Super Widget 2000",
+  desc : "A widget to rule all widgets!",
+  tags : ["super", "widget", "super widget"],
+  manufacture : {
+  	name : "Super Co",
+    stuff : [
+        {
+            title : "Hey There"
+        }
+    ]
+  }
+}
+```
+The following table would represent just some of the different endpoints that the scaffold would handle.
+
+| URL | The API provides |
+| --- |:--- |
+| `/widgets/h38d7g/desc` | "A widget to rule all widgets!" |
+| `/widgets/h38d7g/name` | "Super Widget 2000" |
+| `/widgets/h38d7g/manufacture/name` | "Super Co" |
+| `/widgets/h38d7g/tags/0` | "super" |
+| `/widgets/h38d7g/tags/1` | "widget" |
+| `/widgets/h38d7g/tags` | ["super", "widget", "super widget"] |
+| `/widgets/h38d7g/manufacture/stuff/0/title` | "Hey There" |
+| `/widgets/h38d7g/manufacture` | `{name:"Super Co",stuff:[{title:"Hey There"}]}`|
+
+The scaffold method will find its way to even your deepest nested objects/arrays. 
+
+Conversion:  `foo.bar[2].stuff.what` --> `foo/bar/2/stuff/what`. 
+
+## POST
+The POST method is in place for handling POST requests to routes like `/widgets`. The POST handler will take the data from the request, and store it in the widgets collection in your database.
+
+## PUT
+The PUT method is for handling PUT requests to routes like `/widgets/:id`. It will take the data from the request body and update the document in the widgets collection that matches the id provided in the URL. To clarify, the PUT method is designed to update your document with only the fields that get passed in. 
+
+For example, given the following document:
+```
+{
+  id : "h38d7g",
+  name : "Super Widget 2000",
+  desc : "A widget to rule all widgets!",
+  tags : ["super", "widget", "super widget"],
+  manufacture : {
+  	name : "Super Co",
+    stuff : [
+        {
+            title : "Hey There"
+        }
+    ]
+  }
+}
+```
+
+and a PUT request to `/widgets/h38d7g` with the following request body:
+
+```
+{
+  desc : "A widget to rule all widgets! And More!",
+  tags : ["super", "widget", "super widget", "awesome widget"]
+}
+```
+
+Would Result in the following document:
+```
+{
+  id : "h38d7g",
+  name : "Super Widget 2000",
+  desc : "A widget to rule all widgets! And More!",
+  tags : ["super", "widget", "super widget", "awesome widget"],
+  manufacture : {
+  	name : "Super Co",
+    stuff : [
+        {
+            title : "Hey There"
+        }
+    ]
+  }
+}
+```
+
+## DELETE
+The DELETE method is in place for handling DELETE requests to routes like `/widgets/:id`. The DELETE handler will remove the widget from the widgets collection in your database.
+
+<br>
+### Links
+This repository is available at [github](https://www.github.com/charliemitchell/glad) 
+
+The Glad JS Website is at [gladjs.com](http://www.gladjs.com)
