@@ -9,16 +9,20 @@
 
 ## Required
 * [Node.js](http://nodejs.org/) (with NPM)
+* [Mongo DB](http://mongodb.org/)
 
 ## Optional
 * [Redis](http://redis.io/)
-* [Mongo DB](http://mongodb.org/)
+
 
 ## Installation
 
 * `(sudo) npm install -g glad`
 
 ## Running / Development
+<b>Before you start this guide, make sure that you have mongodb installed and running.</b>
+
+Redis is not required, but the quick start instructions assume that you will be using it. If you would prefer to not use redis, then follow the Detailed Start.
 
 ## Quick Start
 Step 1: `mkdir <your-app> && cd <your-app>`
@@ -30,23 +34,29 @@ Step 3: `glad s`
 You're up and running
 
 ## Detailed Start
-Step 1: Create a new directory for your app. We'll call it "widget-api" for now   `mkdir widget-api`
-<br>
-Step 2: Navigate inside the new directory you just created.                       `cd widget-api`
-<br>
-Step 3: Create a new Glad App                                                     `glad init`
-<br>
-Step 4: Navigate to the newly created src directory.                              `cd src`
-<br>
-Step 5: Generate a New API endpoint for your widgets app                          `glad api users`
-<br>
-Step 6: Boot up the server                                                        `glad s`
-<br>
+Create a new directory for your app. We'll call it "widget-api" for now   `mkdir widget-api`
+
+Navigate inside the new directory you just created.                       `cd widget-api`
+
+Create a new Glad App                                                     `glad init`
+
+Navigate to the newly created src directory.                              `cd src`
+
+Generate a New API endpoint for your widgets app                          `glad api users`
+
+Open up your config file                                                  `nano config.js` or `subl config.js` or `wstorm config.js` etc...
+
+Modify your config variables as needed and close the config file. If you are not going to use Redis, then remove the redis object from your configuration.
+
+Boot up the server                                                        `glad s`
+
+
 Visit your app at [http://localhost:4242/users](http://localhost:4242/users). You should get an empty JSON array back. 
 This means that your users api is up and running, there is just no data in the database. See the section on defining your models to continue and be able to create new users.
 
-
-### Open your config file... (Already set up to defaults)
+---
+<br><br>
+## The config file... (Already set up to defaults)
 ```js
     //....
 
@@ -81,7 +91,9 @@ This means that your users api is up and running, there is just no data in the d
     // etc..
 ```
 
-### Now open up your model file 
+---
+<br>
+## Models 
 (This will be pre-generated, all you have to do is define your model)
 
 ```js
@@ -98,8 +110,9 @@ This means that your users api is up and running, there is just no data in the d
         */
     });
 ```
-
-### Lastly, setup your policy.
+---
+<br>
+## The policy File.
 (this is also pre-generated) `src/policies.js`
 ```js
 module.exports = {
@@ -153,8 +166,9 @@ module.exports = {
     }
 };
 ```
-
-### Routing
+---
+<br>
+## Routing
 Routing is centered around REST. In the routes folder file you will find your routes. The routes object is organized by request method.
 ```js
 module.exports = {
@@ -197,6 +211,131 @@ The combination of request method and url are used to determine the action to ta
 
 ---
 
+# Detailed Overview of the Controller
+Your controller is setup with some default <b>REST API handlers.</b> 
+You can always add more or create your own blueprint for what makes sense to you. However, this is a great starting place, as it gives you a fully functioning API for your resource and from there you can just add in additional functionality as needed.
+
+It is worth mentioning that the policies used in your route file handle authorizing access to the controllers. This way you should not need to implement access control in a controller and it can always be assumed that the request has access to your controller logic.
+
+## GET
+The GET method is in place to handle routes like `/widgets`
+The default code will query the widgets collection for a list of all your widgets, 
+and respond with a list of widgets in JSON format.
+
+You would be advised to modify the query to implement limiting, query strings etc... 
+
+Query strings are available in the request object.  
+In a nutshell, if you hit `/widgets?limit=10&search=widget-2000`
+you would get these query paramters from the `req.query`.
+```
+  //etc...
+  GET : function (req, res) {
+  	var limit = req.query.limit || 20,
+    	search = req.query.search || "";
+    // ---> etc...
+  },
+    //etc...
+```
+
+## findOne
+The findOne method is in place to handle routes like `/widgets/:id`
+The default code will query the widgets collection for the widget with the id that was passed in the url as `req.params.id`, then respond with it in JSON format.
+
+## scaffold
+
+#### Every piece of data has a unique URL.
+The scaffold method is in place for handling routes like `widgets/:id/desc`, where desc is a property of widget.
+For example, say we have the following widget document. <span style="font-size:11px">(The id is shortened, and an object is represented instead of JSON for the purposes of documenting)</span>
+```
+{
+  id : "h38d7g",
+  name : "Super Widget 2000",
+  desc : "A widget to rule all widgets!",
+  tags : ["super", "widget", "super widget"],
+  manufacture : {
+  	name : "Super Co",
+    stuff : [
+        {
+            title : "Hey There"
+        }
+    ]
+  }
+}
+```
+The following table would represent just some of the different endpoints that the scaffold would handle.
+
+| URL | The API provides |
+| --- |:--- |
+| `/widgets/h38d7g/desc` | "A widget to rule all widgets!" |
+| `/widgets/h38d7g/name` | "Super Widget 2000" |
+| `/widgets/h38d7g/manufacture/name` | "Super Co" |
+| `/widgets/h38d7g/tags/0` | "super" |
+| `/widgets/h38d7g/tags/1` | "widget" |
+| `/widgets/h38d7g/tags` | ["super", "widget", "super widget"] |
+| `/widgets/h38d7g/manufacture/stuff/0/title` | "Hey There" |
+| `/widgets/h38d7g/manufacture` | `{name:"Super Co",stuff:[{title:"Hey There"}]}`|
+
+The scaffold method will find its way to even your deepest nested objects/arrays. 
+
+Conversion:  `foo.bar[2].stuff.what` --> `foo/bar/2/stuff/what`. 
+
+## POST
+The POST method is in place for handling POST requests to routes like `/widgets`. The POST handler will take the data from the request, and store it in the widgets collection in your database.
+
+## PUT
+The PUT method is for handling PUT requests to routes like `/widgets/:id`. It will take the data from the request body and update the document in the widgets collection that matches the id provided in the URL. To clarify, the PUT method is designed to update your document with only the fields that get passed in. 
+
+For example, given the following document:
+```
+{
+  id : "h38d7g",
+  name : "Super Widget 2000",
+  desc : "A widget to rule all widgets!",
+  tags : ["super", "widget", "super widget"],
+  manufacture : {
+  	name : "Super Co",
+    stuff : [
+        {
+            title : "Hey There"
+        }
+    ]
+  }
+}
+```
+
+and a PUT request to `/widgets/h38d7g` with the following request body:
+
+```
+{
+  desc : "A widget to rule all widgets! And More!",
+  tags : ["super", "widget", "super widget", "awesome widget"]
+}
+```
+
+Would Result in the following document:
+```
+{
+  id : "h38d7g",
+  name : "Super Widget 2000",
+  desc : "A widget to rule all widgets! And More!",
+  tags : ["super", "widget", "super widget", "awesome widget"],
+  manufacture : {
+  	name : "Super Co",
+    stuff : [
+        {
+            title : "Hey There"
+        }
+    ]
+  }
+}
+```
+
+## DELETE
+The DELETE method is in place for handling DELETE requests to routes like `/widgets/:id`. The DELETE handler will remove the widget from the widgets collection in your database.
+
+<br>
+---
+<br>
 ## Fine Grained Control with Hooks.
 The Hooks file provides hooks that fire while your server is being constructed. 
 You can access the app object as well as the express object using these hooks. 
@@ -264,7 +403,7 @@ We use Google's Caja *(the sanitize package)* as the default sanitizer. We have 
 
 ---
 
- #### Using the sanitizer in your models
+#### Using the sanitizer in your models
  ```javascript
  // Lets create a simple User Model
  var UserModel = new Schema({
@@ -518,7 +657,7 @@ to assist you in creating your own, all with just a few lines of code. Please re
  
   ```
  
-  ## Example
+## Example
   ```
    myModel.find().exec(function (err, docs) {
        docs = docs.map(function (doc) {
@@ -528,7 +667,7 @@ to assist you in creating your own, all with just a few lines of code. Please re
  
   ```
  
-  #### Example of Using The extend feature 
+#### Example of Using The extend feature 
   *Best to do this in your initializer*
  ```
    var dataVersions = require('glad').dataVersions;
@@ -562,132 +701,8 @@ to assist you in creating your own, all with just a few lines of code. Please re
    removeStuff removes all fields that match the keys passed in,
    toProtected removes all fields that do not match the keys passed in
 ```
-
----
-
-# Detailed Overview of the Controller
-Your controller is setup with some default <b>REST API handlers.</b> 
-You can always add more or create your own blueprint for what makes sense to you. However, this is a great starting place, as it gives you a fully functioning API for your resource and from there you can just add in additional functionality as needed.
-
-It is worth mentioning that the policies used in your route file handle authorizing access to the controllers. This way you should not need to implement access control in a controller and it can always be assumed that the request has access to your controller logic.
-
-## GET
-The GET method is in place to handle routes like `/widgets`
-The default code will query the widgets collection for a list of all your widgets, 
-and respond with a list of widgets in JSON format.
-
-You would be advised to modify the query to implement limiting, query strings etc... 
-
-Query strings are available in the request object.  
-In a nutshell, if you hit `/widgets?limit=10&search=widget-2000`
-you would get these query paramters from the `req.query`.
-```
-  //etc...
-  GET : function (req, res) {
-  	var limit = req.query.limit || 20,
-    	search = req.query.search || "";
-    // ---> etc...
-  },
-    //etc...
-```
-
-## findOne
-The findOne method is in place to handle routes like `/widgets/:id`
-The default code will query the widgets collection for the widget with the id that was passed in the url as `req.params.id`, then respond with it in JSON format.
-
-## scaffold
-#### Every piece of data has a unique URL.
-The scaffold method is in place for handling routes like `widgets/:id/desc`, where desc is a property of widget.
-For example, say we have the following widget document. <span style="font-size:11px">(The id is shortened, and an object is represented instead of JSON for the purposes of documenting)</span>
-```
-{
-  id : "h38d7g",
-  name : "Super Widget 2000",
-  desc : "A widget to rule all widgets!",
-  tags : ["super", "widget", "super widget"],
-  manufacture : {
-  	name : "Super Co",
-    stuff : [
-        {
-            title : "Hey There"
-        }
-    ]
-  }
-}
-```
-The following table would represent just some of the different endpoints that the scaffold would handle.
-
-| URL | The API provides |
-| --- |:--- |
-| `/widgets/h38d7g/desc` | "A widget to rule all widgets!" |
-| `/widgets/h38d7g/name` | "Super Widget 2000" |
-| `/widgets/h38d7g/manufacture/name` | "Super Co" |
-| `/widgets/h38d7g/tags/0` | "super" |
-| `/widgets/h38d7g/tags/1` | "widget" |
-| `/widgets/h38d7g/tags` | ["super", "widget", "super widget"] |
-| `/widgets/h38d7g/manufacture/stuff/0/title` | "Hey There" |
-| `/widgets/h38d7g/manufacture` | `{name:"Super Co",stuff:[{title:"Hey There"}]}`|
-
-The scaffold method will find its way to even your deepest nested objects/arrays. 
-
-Conversion:  `foo.bar[2].stuff.what` --> `foo/bar/2/stuff/what`. 
-
-## POST
-The POST method is in place for handling POST requests to routes like `/widgets`. The POST handler will take the data from the request, and store it in the widgets collection in your database.
-
-## PUT
-The PUT method is for handling PUT requests to routes like `/widgets/:id`. It will take the data from the request body and update the document in the widgets collection that matches the id provided in the URL. To clarify, the PUT method is designed to update your document with only the fields that get passed in. 
-
-For example, given the following document:
-```
-{
-  id : "h38d7g",
-  name : "Super Widget 2000",
-  desc : "A widget to rule all widgets!",
-  tags : ["super", "widget", "super widget"],
-  manufacture : {
-  	name : "Super Co",
-    stuff : [
-        {
-            title : "Hey There"
-        }
-    ]
-  }
-}
-```
-
-and a PUT request to `/widgets/h38d7g` with the following request body:
-
-```
-{
-  desc : "A widget to rule all widgets! And More!",
-  tags : ["super", "widget", "super widget", "awesome widget"]
-}
-```
-
-Would Result in the following document:
-```
-{
-  id : "h38d7g",
-  name : "Super Widget 2000",
-  desc : "A widget to rule all widgets! And More!",
-  tags : ["super", "widget", "super widget", "awesome widget"],
-  manufacture : {
-  	name : "Super Co",
-    stuff : [
-        {
-            title : "Hey There"
-        }
-    ]
-  }
-}
-```
-
-## DELETE
-The DELETE method is in place for handling DELETE requests to routes like `/widgets/:id`. The DELETE handler will remove the widget from the widgets collection in your database.
-
-<br>
-### Links
+<br><br>
+## Links
 This repository is available at [github](https://www.github.com/charliemitchell/glad) 
 
 The Glad JS Website is at [gladjs.com](http://www.gladjs.com)

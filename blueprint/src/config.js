@@ -2,7 +2,7 @@ var localhost = process.env.LOCALHOST || 'localhost';
 
 module.exports = {
 
-    port : 4242, /*ns-port*/ // <-- Leave that comment if you would like to run `glad set port 4345`
+    port : 4242, /*ns-port*/
 
     sessionless : false, // Set True if you don't want to use a session
 
@@ -17,18 +17,13 @@ module.exports = {
      */
     localkey : process.env.LOCALKEY || 'dev',
 
-    /**
-     * The Address of localhost
-     */
-    localhost : localhost,
+    localhost : localhost, // address of localhost (can differ if using Docker, etc...)
 
-    /**
-     * Interpret Request Bodies as JSON
-     */
     bodyParser : 'json', // What Kind of API is this [https://www.npmjs.com/package/body-parser]
+
     maxBodySize : '100kb', // The max body size of a request [https://www.npmjs.com/package/body-parser]
 
-    // Used For Session
+    // Used For Session, remove this if you are not using redis.
     redis : {
         host: localhost,
         port: 6379,
