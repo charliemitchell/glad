@@ -6,7 +6,7 @@ module.exports = {
 
     authenticated : function (req, res, accept, reject) {
         if (req.session) {
-            if (req.session.loggedin) {
+            if (req.session.authenticated) {
                 accept();
             } else {
                 reject();
