@@ -46,7 +46,7 @@ if (argv.v || argv.version || (argv._[0] && _.contains(['v', 'version'], argv._[
 }
 
 // IF Running `glad list`
-if (argv.l || argv.list || (argv._[0] && _.contains(['l', 'list'], argv._[0]))) {
+else if (argv.l || argv.list || (argv._[0] && _.contains(['l', 'list'], argv._[0]))) {
     var files_path = process.cwd() + '/controllers',
         files = fs.readdirSync(files_path),
         mode = "Controllers";
@@ -72,7 +72,7 @@ if (argv.l || argv.list || (argv._[0] && _.contains(['l', 'list'], argv._[0]))) 
 
 
 // Glad Run
-if (argv.r || argv.run || (argv._[0] && _.contains(['r', 'run'], argv._[0]))) {
+else if (argv.r || argv.run || (argv._[0] && _.contains(['r', 'run'], argv._[0]))) {
   var interactive = (argv.i || argv.interactive || (argv._[2] && _.contains(['i', 'interactive'], argv._[2])));
 
   try {
@@ -98,7 +98,7 @@ if (argv.r || argv.run || (argv._[0] && _.contains(['r', 'run'], argv._[0]))) {
 }
 
 // Glad Console
-if (argv.c || argv.console || (argv._[0] && _.contains(['c', 'console'], argv._[0]))) {
+else if (argv.c || argv.console || (argv._[0] && _.contains(['c', 'console'], argv._[0]))) {
     try {
 
         require(process.cwd() + '/node_modules/glad/service')(false, {
