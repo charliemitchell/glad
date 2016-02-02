@@ -1,6 +1,5 @@
 require('./exitHandler')();
 require('colors');
-require('./boot/glad_globals');
 
 var initialize_hook = require('./boot/initialize_hook'),
     express = require("express"),

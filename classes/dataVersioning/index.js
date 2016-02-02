@@ -95,12 +95,11 @@
  * @param schema {mongoose.Schema}
  *
  */
-
-// Built In Versions
-global._GLAD_DATA_VERSIONS.systemData  = require('./models/removeSystemData');
-global._GLAD_DATA_VERSIONS.privateData = require('./models/removePrivateData');
-global._GLAD_DATA_VERSIONS.minimalData = require('./models/to_minimal');
-
+var glad = require('glad');
+glad.versions = glad.versions || {};
+glad.versions.systemData  = require('./models/removeSystemData');
+glad.versions.privateData = require('./models/removePrivateData');
+glad.versions.minimalData = require('./models/to_minimal');
 
 module.exports = {
     create : function (params) {
@@ -125,8 +124,8 @@ module.exports = {
         };
 
         Object.keys(versions).forEach(function (key) {
-            if (versions.hasOwnProperty(key) && global._GLAD_DATA_VERSIONS[key]) {
-                global._GLAD_DATA_VERSIONS[key](schema, versions[key])
+            if (versions.hasOwnProperty(key) && glad.versions[key]) {
+                glad.versions[key](schema, versions[key])
             } else {
                 console.log("---------------------------------------------------------------".red);
                 console.log((" !!! Could not create the data version for " + key).red);
@@ -137,7 +136,7 @@ module.exports = {
     },
 
     extend : function (name, model) {
-        global._GLAD_DATA_VERSIONS[name] = model;
+        glad.versions[name] = model;
     },
 
     keyDifference : require('./helpers/keyDifference'),
