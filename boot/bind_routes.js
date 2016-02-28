@@ -10,7 +10,8 @@ module.exports = function (app, routes, controllers, applyPolicy) {
                 verbose("Glad: Binding Route :: GET".grey, (route.path).grey/*, " #action".grey, (route.action).grey*/);
                 if (controllers[key]) {
                     if (controllers[key][route.action]) {
-                        app.get(route.path, applyPolicy(route.policy, controllers[key][route.action]));
+                        app.get(route.path, applyPolicy(route.policy, controllers[key][route.action], key, route.action));
+
                     } else {
                         throw("Error Binding Route: GET: " + route.path + "\nController for " + key + " has no method " + route.action);
                     }
@@ -34,7 +35,7 @@ module.exports = function (app, routes, controllers, applyPolicy) {
                 verbose("Glad: Binding Route :: POST".grey, (route.path).grey/*, " #action".grey, (route.action).grey*/);
                 if (controllers[key]) {
                     if (controllers[key][route.action]) {
-                        app.post(route.path, applyPolicy(route.policy, controllers[key][route.action]));
+                        app.post(route.path, applyPolicy(route.policy, controllers[key][route.action], key, route.action));
                     } else {
                         throw("Error Binding Route: POST: " + route.path + "\nController for " + key + " has no method " + route.action);
                     }
@@ -50,7 +51,7 @@ module.exports = function (app, routes, controllers, applyPolicy) {
                 verbose("Glad: Binding Route :: PUT".grey, (route.path).grey/*, " #action".grey, (route.action).grey*/);
                 if (controllers[key]) {
                     if (controllers[key][route.action]) {
-                        app.put(route.path, applyPolicy(route.policy, controllers[key][route.action]));
+                        app.put(route.path, applyPolicy(route.policy, controllers[key][route.action], key, route.action));
                     } else {
                         throw("Error Binding Route: PUT: " + route.path + "\nController for " + key + " has no method " + route.action);
                     }
@@ -66,7 +67,7 @@ module.exports = function (app, routes, controllers, applyPolicy) {
                 verbose("Glad: Binding Route :: DELETE".grey, (route.path).grey/*, " #action".grey, (route.action).grey*/);
                 if (controllers[key]) {
                     if (controllers[key][route.action]) {
-                        app.delete(route.path, applyPolicy(route.policy, controllers[key][route.action]));
+                        app.delete(route.path, applyPolicy(route.policy, controllers[key][route.action], key, route.action));
                     } else {
                         throw("Error Binding Route: DELETE: " + route.path + "\nController for " + key + " has no method " + route.action);
                     }

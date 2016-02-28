@@ -46,6 +46,7 @@ function after_init_hook (callback, conf) {
         before_read_session_hook    = require('./boot/before_read_session_hook'),
         before_router_hook      = require('./boot/before_router_hook'),
         before_listen_hook      = require('./boot/before_listen_hook'),
+        tokenizer               = require('./classes/tokenizer').create('ABCDEFGHIJKLMNPRTWXYZ2346789abcdefghijknprstuwxyz'),
         finalize;
 
     /**
@@ -63,6 +64,18 @@ function after_init_hook (callback, conf) {
 
     // Show The Logo, or not (depending on config)
     showLogo(config);
+
+    // ID each request and possibly log it as well.
+    app.use(function (req, res, next) {
+        req.id = tokenizer(5);
+        if (config.logHTTP) {
+            console.log(
+                ("Request  (" + req.id + ") <<").cyan,
+                (req.method + ":").cyan, (req.url).cyan
+            );
+        }
+        next();
+    });
 
     /**
      * If the developer has chosen to make the models available globally
@@ -120,6 +133,24 @@ function after_init_hook (callback, conf) {
 
                                 app.use(function (req, res, next) {
                                     req.on("end", function () {
+
+                                        var color = "green";
+
+                                        if (config.logHTTP) {
+                                            if (res.statusCode >= 400 && res.statusCode < 500) {
+                                                color = "yellow";
+                                            } else if (res.statusCode >= 500) {
+                                                color = "red";
+                                            }
+
+                                            console.log(
+                                                ("Response ("+ req.id +") >>")[color],
+                                                String(res.statusCode)[color],
+                                                String(res.statusMessage)[color],
+                                                String((res._headers['content-length'] || 0) + " bytes").black
+                                            );
+                                        }
+
                                         middleware.onAfterResponse(req, res);
                                     });
                                     next();

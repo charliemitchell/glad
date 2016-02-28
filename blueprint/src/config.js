@@ -6,16 +6,15 @@ module.exports = {
 
     sessionless : false, // Set True if you don't want to use a session
 
-    verbose : false,
+    verbose : false, // Additional logging
 
-    reportGlobalVars : true,
+    logHTTP : true, // Log request, routing, and response information
+
+    reportGlobalVars : true, // Log any globals that get created during startup
 
     exposeModels : false, // Set True if you would like to expose Models as Global Variables
 
-    /**
-     * Typically Used for key sharing between separate server (service) instances.
-     */
-    localkey : process.env.LOCALKEY || 'dev',
+    localkey : process.env.LOCALKEY || 'dev', // typically used for key sharing between instances
 
     localhost : localhost, // address of localhost (can differ if using Docker, etc...)
 
@@ -23,7 +22,7 @@ module.exports = {
 
     maxBodySize : '100kb', // The max body size of a request [https://www.npmjs.com/package/body-parser]
 
-    // Used For Session, remove this if you are not using redis.
+    // Redis (Just Remove this entire key if you would like to run without redis)
     redis : {
         host: localhost,
         port: 6379,
@@ -32,6 +31,7 @@ module.exports = {
         password : false
     },
 
+    // Cookie
     cookie : {
         name : 'connect.sid',
         secret: 'Your session secret',

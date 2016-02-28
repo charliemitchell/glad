@@ -1,13 +1,12 @@
 var middleware = require('glad').middleware.extend({
-    // Injects custom Middleware after Router (USEFUL FOR STATIC PAGES)
+
     custom : function (app, express) {
         // To Serve Static Assets ...
         // app.use(express.static(require('path').join(process.cwd(), '/client/')));
     },
 
-    // Will get called on every request, before anything is handled
+    // Will get called on every request, after getting the session info
     onRequest : function (req, res, next) {
-        console.log((req.method + ":").cyan, (req.url).cyan);
         next();
     },
 

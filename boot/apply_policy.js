@@ -1,12 +1,21 @@
 var requireCwd = function (aPath) {
         return require(process.cwd() + aPath);
     },
-    policies = requireCwd('/policies');
+    policies = requireCwd('/policies'),
+    config = requireCwd('/config');
 
 module.exports = applyPolicy
 
-function applyPolicy (policy, method) {
+function applyPolicy (policy, method, key, action) {
+
     return function (req, res) {
+
+        req.controller = key;
+        req.action = action;
+
+        if (config.logHTTP) {
+            console.log(['Routing  (', req.id, ')', " to ", key, '#', action].join('').cyan);
+        }
 
         var accept = function () {
                 method(req, res);

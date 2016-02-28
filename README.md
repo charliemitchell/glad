@@ -453,6 +453,7 @@ We use Google's Caja *(the sanitize package)* as the default sanitizer. We have 
     require('glad').optimist        // <-- process arguments utility (https://www.npmjs.com/package/optimist)
     require('glad').sanitizer       // <-- String Sanitization (Based on Google's Caja) (https://www.npmjs.com/package/sanitizer)
     require('glad').dataVersions    // <-- Data versioning class for model data.
+    require('glad').tokenizer       // <-- Tokenizer.
 
 ```
 
@@ -478,6 +479,28 @@ For now, there are a few utility methods. We'll work on rollling out much more, 
 
     var fooClone = object.clone(foo); // <--- Fully Cloned Version Of foo.
     var fooLike = object.extend(foo, {a : "new a"}); // <--- Fully Cloned, Props Overwritten.
+
+```
+
+### The Tokenizer
+Glad exports it's internal tokenizer (used to id request objects). 
+There are 2 methods on the tokenizer. 
+The generate method uses the built in character set which is URL safe `/[a-zA-Z0-9-_]/`.
+To use the generate method, all you have to do is pass in the character length you want `tokenizer.generate(22)`.
+
+There is also a create method which will allow you to issue a new tokenizer based on a custom character set. See below for more on this.
+
+```js
+
+    var tokenizer = require('glad').tokenizer;
+    
+    // Using The generate method
+    tokenizer.generate(6);   // Creates a 6 character random token
+    tokenizer.generate(256); // Creates a 256 character random token
+    
+    // Using the create method
+    var myTokenizer = tokenizer.create('0123456789');
+    myTokenizer.generate(6) // 6 character token consisting of characters in the set '0123456789'
 
 ```
 
