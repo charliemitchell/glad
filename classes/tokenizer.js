@@ -21,20 +21,22 @@ function generate(salt, size){
     var sl = salt.length;
     while ( size -- ) {
         var rnd = rand(sl);
-        key += salt[rnd]
+        key += salt[rnd];
     }
-    return key
+    return key;
 }
 
 var randomToken = function(salt, size){
-    return isNaN(size) ? undefined : size < 1 ? undefined : generate(salt, size)
+    return isNaN(size) ? undefined : (size < 1) ? undefined : generate(salt, size);
 };
 
 randomToken.gen = createGenerator;
 
 function createGenerator (salt) {
-    salt = typeof salt  == 'string' && salt.length > 0 ? salt :  'ABCDEFGHIJKLMNOPQRSTUVWXYZ-0987654321_abcdefghijklmnopqrstuvwxyz';
-    var temp = randomToken.bind(randomToken, salt);
+    var temp;
+
+    salt = ( (typeof salt  === 'string') && (salt.length > 0) ) ? salt :  'ABCDEFGHIJKLMNOPQRSTUVWXYZ-0987654321_abcdefghijklmnopqrstuvwxyz';
+    temp = randomToken.bind(randomToken, salt);
     temp.salt = function(){ return salt; };
     temp.create = createGenerator;
     temp.gen = createGenerator;
