@@ -14,7 +14,7 @@ function applyPolicy (policy, method, key, action) {
         req.action = action;
 
         if (config.logHTTP) {
-            console.log(['Routing  (', req.id, ')', " to ", key, '#', action].join('').cyan);
+            console.log(['Routing   ', req.id, ' ', " to ", key, '#', action].join('').cyan);
         }
 
         var accept = function () {

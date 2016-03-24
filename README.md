@@ -66,10 +66,14 @@ This means that your users api is up and running, there is just no data in the d
 
     verbose : false, //<--- Level of logging
     
-    // ...
+    logHTTP : true, // Log request, routing, and response information
+
+    exposeModels : false, // Set True if you would like to expose Models as Global Variables, (Access your models anywhere, esp. useful in console/ interactive mode)
+    
+    // ... more configurations etc ...
     
     bodyParser : 'json', // What Kind of API is this 
-
+	
     redis : {
       host: localhost,
       port: 6379
@@ -453,7 +457,7 @@ We use Google's Caja *(the sanitize package)* as the default sanitizer. We have 
     require('glad').optimist        // <-- process arguments utility (https://www.npmjs.com/package/optimist)
     require('glad').sanitizer       // <-- String Sanitization (Based on Google's Caja) (https://www.npmjs.com/package/sanitizer)
     require('glad').dataVersions    // <-- Data versioning class for model data.
-    require('glad').tokenizer       // <-- Tokenizer.
+    require('glad').tokenizer       // <-- Tokenizer. 
 
 ```
 
@@ -725,6 +729,128 @@ to assist you in creating your own, all with just a few lines of code. Please re
    toProtected removes all fields that do not match the keys passed in
 ```
 <br><br>
+
+## Tokenizer
+The tokenizer module should be suffiecient any of your tokenizing needs.
+```
+  var tokenizer = require('glad').tokenizer;
+    
+  tokenizer.generate(6); // <-- 6 character token
+  tokenizer.generate(256); // <-- 256 character token
+ 
+  var myTokenizer = tokenizer.create('0123456789'); // custom radix
+  myTokenizer.generate(6) // 6 character token of '0123456789' characters
+ 
+  // Using The Time Encoded Tokens
+  var timeToken = tokenizer.timeCoded() // <- Time Encoded token
+  var time = tokenizer.timeDecoded(timeToken) // <- equivelent to Date().getTime() at the time that the token was created
+  var dateTime = new Date(time); // Real Date Object from Token
+```
+
+| API | Description|
+| ---: |:--- |
+| tokenizer.generate(n) | <span style="font-size:12px">Returns a *String* of `Number n` charters in length using a url-safe base 64 radix</span> |
+| tokenizer.create(radix)   | <span style="font-size:12px">Returns an instance of `tokenizer.generate` with a a character base defined by `String radix` and a base of `radix.length` </span>|
+| tokenizer.timeCoded(radix) <br><br> *radix is optinal and defaults to a url-safe base64 radix.* | <span style="font-size:12px"> Returns a `String` of variable length *(usually < 12 chars)* that has an extremely high probablity of being unique even when this token is generated hundreds of times in the same second. The String returned from this method has a timestamp that is encoded into it. The encoding can be expanded back out into a timestamp using `tokenizer.timeDecoded`. The String is formatted as so: timeCode:randomCode and may look like `'Bl2Tr3:fxOw'`</span>|
+| tokenizer.timeDecoded(`'Bl2Tr3:fxOw'`)  | <span style="font-size:12px">Returns a *Date* Object `Thu Mar 24 2016 09:22:05 GMT-0700 (PDT)` given a `String` created by `tokenizer.timeCoded`</span>|
+| tokenizer.radixes | <span style="font-size:12px"> A few alternate radixes to use insdead of the default 64 character one. the base62 and base64 radixes are url-safe and the base74 and base84 radixes are not. The radixes are accesible on the `tokenizer.radixes` object as follows. `tokenizer.radixes.62`, `tokenizer.radixes.64`, `tokenizer.radixes.74`, `tokenizer.radixes.84` </span>|
+
+
+
+<br><br>
+## Plugins
+Glad supports plugin authorship for automating integration with new or existing Apps. Plugins are only available in Glad 0.6.0 and above.
+In order for glad to recognize your plugin, the plugin name should start with `glad-`, and the plugin's index must define `hook`. 
+
+#### Installing a plugin
+Find the plugin either on NPM or github etc... `npm install` the plugin you want. That's it. 
+
+#### Creating a plugin
+`index.js`
+```
+ module.exports = {
+ 
+   name : 'My Awesome Glad Plugin',                   // Humanized name of your plugin
+
+   minGladVersion : '0.6.0',                          // This plugin requires at least Glad 0.6.0
+
+   hook : 'onBeforeBodyParser',                       // Where should this plugin get injected at? This must be a hook supported by GLad. (see hooks)
+
+   method : function (server, app, express, next) {   // Glad will run this method to inject your plugin
+     // Do stuff.
+     next();                                          // You must invoke `next`.
+   }
+ }
+```
+
+`package.json`
+```
+{
+  "name": "glad-my-awesome-plugin",
+  "version": "0.1.0",
+  "description": "My plugin for the Glad JS Framework.",
+  "author": "Your Name <youremail@mail.com>",
+  "license": "Your Licence",
+  "keywords" : ["glad", "glad js", "<my plugin>", "<my plugin does stuff>"],
+  "bugs": {
+    "url": "http://github.com/<yourgithub>/<yourplugin>",
+    "email": "charliesemailis@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/<yourgithub>/<yourplugin>.git",
+  },
+  "peerDependencies" : {
+    "glad" : ">= 0.6.0"
+  }
+}
+```
+
+Then all that is left is to test/publish your plugin.
+
+<span style="font-size:18px">S</span>ometimes your plugin may require configuration in order to be flexible enough to be useful. The best way to do this would be to specify in your README/ Docs
+how to configure it. You should instruct developers to configure this in <span style="text-decoration:underline">their</span> `config.js` file. 
+Be sure to account for the case where the developer does not do this by checking if the config for your plugin exists, either implement a default or throw 
+an error with a detailed message if config is madatory.
+
+For example, your plugin config may look something like this.
+
+`config.js`
+```
+    // Other glad config stuff
+    gladMyAwesomePlugin : {
+        foo : true,
+        bar : 100
+    }
+```
+
+`index.js`
+```
+    var config = require(process.cwd() + '/config');
+    var extend = require('glad').utility.object.extend;
+    
+    module.exports = {
+       name : 'My Awesome Glad Plugin',
+       minGladVersion : '0.6.0',
+       hook : 'onBeforeBodyParser',
+       method : function (server, app, express, next) {
+         // Your Defaults
+         var conf = {
+            foo : false,
+            bar : 20
+         };
+         
+         if (config.gladMyAwesomePlugin) {
+            conf = extend(conf, config.gladMyAwesomePlugin);
+         }
+         
+         // Do Stuff
+         next();
+       }
+     }
+```
+
+
 ## Links
 This repository is available at [github](https://www.github.com/charliemitchell/glad) 
 
