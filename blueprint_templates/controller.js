@@ -69,7 +69,7 @@ module.exports = {
                     scaffold = {{model}};
 
                 for (var i=0, len=path.length; i < len; i +=1) {
-                    if (scaffold[path[i]] === undefined ) {
+                    if (!scaffold || scaffold[path[i]] === undefined ) {
                         res.status(404).json({
                             error : "The path " + path[i] + " does Not Exist on the resource " + ((i-1 === -1) ? " {{model}} " : (path[i-1]))
                         })
