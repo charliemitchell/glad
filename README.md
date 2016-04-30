@@ -114,12 +114,17 @@ This means that your users api is up and running, there is just no data in the d
         */
     });
 ```
+
 ---
+
 <br>
+
 ## The policy File.
+
 (this is also pre-generated) `src/policies.js`
-```js
-module.exports = {
+
+```
+  module.exports = {
     
     onFailure : function (req, res) {
         res.json({auth : false, error : "Not Logged In"}); 
@@ -168,14 +173,19 @@ module.exports = {
             reject("You must be logged in to do that.");
         }
     }
-};
+  };
 ```
+
 ---
+
 <br>
+
 ## Routing
+
 Routing is centered around REST. In the routes folder file you will find your routes. The routes object is organized by request method.
-```js
-module.exports = {
+
+```
+  module.exports = {
     GET: [{
         path: '/users',         // <--- what url does this entry match?
         action: 'GET',  // <--- what controller method should handle this request?
@@ -204,7 +214,7 @@ module.exports = {
         action: 'DELETE',
         policy: 'authenticated'
     }]
-}
+  }
 ```
 As you can see, you have an array of Get, Post, Put, and Delete methods. 
 The combination of request method and url are used to determine the action to take and the policy to implement. 
