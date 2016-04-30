@@ -257,7 +257,7 @@ For example, say we have the following widget document. <span style="font-size:1
   desc : "A widget to rule all widgets!",
   tags : ["super", "widget", "super widget"],
   manufacture : {
-  	name : "Super Co",
+    name : "Super Co",
     stuff : [
         {
             title : "Hey There"
@@ -297,7 +297,7 @@ For example, given the following document:
   desc : "A widget to rule all widgets!",
   tags : ["super", "widget", "super widget"],
   manufacture : {
-  	name : "Super Co",
+    name : "Super Co",
     stuff : [
         {
             title : "Hey There"
@@ -324,7 +324,7 @@ Would Result in the following document:
   desc : "A widget to rule all widgets! And More!",
   tags : ["super", "widget", "super widget", "awesome widget"],
   manufacture : {
-  	name : "Super Co",
+    name : "Super Co",
     stuff : [
         {
             title : "Hey There"
@@ -353,15 +353,30 @@ method that you must invoke in order for your app to finish its booting process.
 ## Run Command
 Use `glad run jobs/myjob` to run a script in the context of your application. In this example, the file located at `jobs/myjob.js` will run after an instance of the server is booted up in a separate process.
 This instance will not be bound to any port, so it can not be accessed from your network. I find that it is useful for debugging, as well as setting up chron jobs. If you do opt for chron jobs, be sure to 
-terminate the process when you are finished.
+terminate the process when you are finished. Glad will set a flag for you on the process object when you are in "run mode" (`process.glad.run = true`). 
+For example, this is helpful if you have a cron setup on the main node process, as you probably only want to run that job on the main production server node etc..
 
----
 
 ## Interactive Mode
 `glad serve -i` or `glad run jobs/myjob -i` will boot up the server in interactive mode (repl).
 
 Once your application is in interactive mode you will have console access to your app so you can inspect globals, run queries in mongoose, debug, and do anything you want to.
 
+## Console Mode
+run `glad console` or `glad c` for short and you will enter into console mode which is similar to Interactive mode, But does not bind to any port or require a file to run.
+If you are familiar with Rails, then this is similar to running the Rails console. Just like running `glad serve -i` you will have console access to your app. 
+But this will behave more similarly to the `glad run` command because your application will not bind to any port. 
+<b>You can run</b> `glad console` <b>while</b> `glad serve` <b>is running!</b> 
+You can also have multiple Glad consoles open along with `glad run` jobs as well. 
+They all run independently of each other.
+As with the run command, Glad will set a flag for you on the process object when you are in "console mode" (`process.glad.console = true`).
+
+
+With Run and Console modes, Glad sets flags for you to test against. 
+The three flags are `process.glad.run`, `process.glad.console`, and `process.glad.aux`. 
+The `aux` flag will get set to `true` if you are in Run mode or Console Mode. This is to make it easier to test for either case.
+
+---
 
 #### Example of running a query in interactive mode
 ```
@@ -380,10 +395,6 @@ Users.find().count().exec(console.log);
 null 1209765
 ```
 ---
-
-## Console Mode
-run `glad console` or `glad c` for short and you will enter into console mode which is similar to Interactive mode, But does not bind to any port or require a file to run.
-If you are familiar with Rails, then this is similar to running the Rails console. Just like running `glad serve -i` you will have console access to your app. But this will behave more similarly to the `glad run` command because your application will not bind to any port. <b>You can run</b> `glad console` <b>while</b> `glad serve` <b>is running!</b> You can also have multiple Glad consoles open along with `glad run` jobs as well. They all run independently of each other.
 
 
 ## Built In Validations

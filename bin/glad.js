@@ -15,7 +15,8 @@ require('colors');
 
 process.glad = {
     console : false,
-    run     : false
+    run     : false,
+    aux     : false
 };
 
 function help() {
@@ -80,6 +81,7 @@ else if (argv.l || argv.list || (argv._[0] && _.contains(['l', 'list'], argv._[0
 else if (argv.r || argv.run || (argv._[0] && _.contains(['r', 'run'], argv._[0]))) {
   var interactive = (argv.i || argv.interactive || (argv._[2] && _.contains(['i', 'interactive'], argv._[2])));
   process.glad.run = true;
+  process.glad.aux = true;
 
   try {
 
@@ -106,6 +108,7 @@ else if (argv.r || argv.run || (argv._[0] && _.contains(['r', 'run'], argv._[0])
 // Glad Console
 else if (argv.c || argv.console || (argv._[0] && _.contains(['c', 'console'], argv._[0]))) {
     process.glad.console = true;
+    process.glad.aux = true;
     try {
         require(process.cwd() + '/node_modules/glad/service')(false, {
             port : 4243,
