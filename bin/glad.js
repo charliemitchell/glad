@@ -13,6 +13,11 @@ var _ = require('lodash'),
 
 require('colors');
 
+process.glad = {
+    console : false,
+    run     : false
+};
+
 function help() {
     console.log("Available Commands:".green)
     console.log("glad api   [name]                   # Creates a new API".yellow);
@@ -74,6 +79,7 @@ else if (argv.l || argv.list || (argv._[0] && _.contains(['l', 'list'], argv._[0
 // Glad Run
 else if (argv.r || argv.run || (argv._[0] && _.contains(['r', 'run'], argv._[0]))) {
   var interactive = (argv.i || argv.interactive || (argv._[2] && _.contains(['i', 'interactive'], argv._[2])));
+  process.glad.run = true;
 
   try {
 
@@ -99,14 +105,13 @@ else if (argv.r || argv.run || (argv._[0] && _.contains(['r', 'run'], argv._[0])
 
 // Glad Console
 else if (argv.c || argv.console || (argv._[0] && _.contains(['c', 'console'], argv._[0]))) {
+    process.glad.console = true;
     try {
-
         require(process.cwd() + '/node_modules/glad/service')(false, {
             port : 4243,
             listen : false,
             interactive : true
         });
-
     } catch (e) {
         console.error(e);
     }
