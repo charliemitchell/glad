@@ -1,1 +1,1 @@
-require('glad').server();
+require('glad').__boot();

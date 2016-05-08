@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+require('colors');
 
 var _ = require('lodash'),
     fs = require('fs'),
@@ -11,7 +12,7 @@ var _ = require('lodash'),
     config = {},
     cpr = require('cpr');
 
-require('colors');
+
 
 process.glad = {
     console : false,
@@ -37,6 +38,7 @@ function help() {
     console.log("glad r [i]             # glad run [i]".yellow);
     console.log("glad l [m|r]           # glad list [m|r]".yellow);
     console.log("glad d [name]          # glad destroy [name]".yellow);
+    process.exit(0);
 }
 // IF Running `glad -h`
 if (argv.h || argv.help || (argv._[0] && _.contains(['h', 'help'], argv._[0]))) {
@@ -49,6 +51,7 @@ var version = JSON.parse(fs.readFileSync(path.join((__dirname).replace('bin', ""
 // IF Running `glad -v`
 if (argv.v || argv.version || (argv._[0] && _.contains(['v', 'version'], argv._[0]))) {
     console.log('v' + version);
+    process.exit(0);
 }
 
 // IF Running `glad list`
@@ -74,6 +77,7 @@ else if (argv.l || argv.list || (argv._[0] && _.contains(['l', 'list'], argv._[0
             console.log( String(idx).green +  ((idx <=9) ? "   " : (idx <=99) ? "  " : " ") + (file.replace('.js', '')).blue);
         }
     });
+    process.exit(0);
 }
 
 
@@ -125,11 +129,13 @@ else if (argv._.length === 0) {
     console.log('');
     console.log('Welcome to Glad! (v' + version + ')');
     console.log('');
+    process.exit(0);
 }
 
 // If setting preferences
 else if (argv.p || argv.prefs || argv.preferences || argv.pref || (argv._[0] && _.contains(['p', 'prefs', 'preferences', 'pref'], argv._[0]))) {
     prefs(argv);
+    process.exit(0);
 }
 
 // If starting the server
@@ -333,7 +339,6 @@ else if (argv.stub || (argv._[0] && _.contains(['stub'], argv._[0]))) {
                  src_test = fs.readFileSync(path.join(template_dir, "test.js"), "utf-8");
              }
 
-
              fs.writeFileSync(dest_model_path, src_model.replace(/\{\{model}}/g, model));
              fs.writeFileSync(dest_route_path, src_route.replace(/\{\{model}}/g, model));
              fs.writeFileSync(dest_test_path, src_test.replace(/\{\{model}}/g, model));
@@ -341,10 +346,7 @@ else if (argv.stub || (argv._[0] && _.contains(['stub'], argv._[0]))) {
                  src_controller
                      .replace(/\{\{model}}/g, model)
                      .replace(/\{\{model_cap}}/g, (model[0].toUpperCase() + model.slice(1, (model.length - 1)))));
-
-
          } else {
-
              console.log('The Path ' + pathToStub + ' Does Not Exist'.red);
              if (pathToStub.charAt(0) === '/') {
                  console.log("Absolute Path: ", pathToStub);
@@ -352,6 +354,5 @@ else if (argv.stub || (argv._[0] && _.contains(['stub'], argv._[0]))) {
                  console.log("Absolute Path: ", path.join(process.cwd(), pathToStub));
              }
          }
-
      }());
 }
