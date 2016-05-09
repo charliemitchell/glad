@@ -124,14 +124,6 @@ else if (argv.c || argv.console || (argv._[0] && _.contains(['c', 'console'], ar
     }
 }
 
-// If Running Glad with out any args
-else if (argv._.length === 0) {
-    console.log('');
-    console.log('Welcome to Glad! (v' + version + ')');
-    console.log('');
-    process.exit(0);
-}
-
 // If setting preferences
 else if (argv.p || argv.prefs || argv.preferences || argv.pref || (argv._[0] && _.contains(['p', 'prefs', 'preferences', 'pref'], argv._[0]))) {
     prefs(argv);
@@ -139,11 +131,19 @@ else if (argv.p || argv.prefs || argv.preferences || argv.pref || (argv._[0] && 
 }
 
 // If starting the server
-else if (argv.s || argv.server || argv.up || argv.u || (argv._[0] && _.contains(['s', 'server', 'up', 'u'], argv._[0]))) {
-  var interactive = (argv.i || argv.interactive || (argv._[1] && _.contains(['i', 'interactive'], argv._[1])));
-  require(process.cwd() + '/node_modules/glad/service')(config, {
-    interactive : interactive
-  });
+else if (((argv._.length === 0) && (argv['$0'] && argv['$0'] !== 'glad')) || argv.s || argv.server || argv.up || argv.u || (argv._[0] && _.contains(['s', 'server', 'up', 'u'], argv._[0]))) {
+    console.log(argv);
+    var interactive = (argv.i || argv.interactive || (argv._[1] && _.contains(['i', 'interactive'], argv._[1])));
+    require(process.cwd() + '/node_modules/glad/service')(config, {
+        interactive : interactive
+    });
+}
+// If running Glad with no args
+else if (argv._.length === 0) {
+    console.log('');
+    console.log('Welcome to Glad! (v' + version + ')');
+    console.log('');
+    process.exit(0);
 }
 
 // If Creating an API

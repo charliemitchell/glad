@@ -14,6 +14,11 @@
 ## Optional
 * [Redis](http://redis.io/)
 
+## Important Note:
+If you are upgrading from less than 0.6.4 to 0.6.4 or higher, there is a few changes that you need to make. Please read the release notes for more information on this. If you skip 0.6.4 and go 0.6.5 or higher, there is no need to worry about the release notes for 0.6.4. Please read notes for 0.6.5 as there is only one line of code you will need to change.
+[Release Notes 0.6.4](https://github.com/charliemitchell/glad/releases/tag/v0.6.4)
+[Release Notes 0.6.5](https://github.com/charliemitchell/glad/releases/tag/v0.6.5)
+
 
 ## Installation
 
