@@ -1,4 +1,5 @@
-var localhost = process.env.LOCALHOST || 'localhost';
+var localhost = process.env.LOCALHOST || 'localhost'; // Address of localhost
+var database = process.env.test ? 'yourtestdatabase' : 'yourdatabase'; // The Database To Connect To
 
 module.exports = {
 
@@ -45,7 +46,7 @@ module.exports = {
     mongodb : {
         host : localhost,
         port : 27017,
-        database : 'yourdatabase',
+        database : database,
         username : false,
         password : false
     }

@@ -1,7 +1,7 @@
 {
   "name": "glad",
   "main": "./lib/index.js",
-  "version": "0.6.5",
+  "version": "0.7.0",
   "description": "A robust Node Js API framework to effortlessly generate REST API's.",
   "author": "Charlie Mitchell <charliesemailis@gmail.com>",
   "license": "MIT",

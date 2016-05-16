@@ -7,7 +7,7 @@ module.exports = {
     },{
         path : '/{{model}}/:id',
         action : 'findOne',
-        policy : 'authenticated'
+        // policy : 'authenticated'
     },{
         path : '/{{model}}/:id/*',
         action : 'scaffold',

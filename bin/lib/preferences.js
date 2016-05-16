@@ -3,7 +3,7 @@ var fs = require('fs'),
     prefs = require(path.join(__dirname,  '../preferences.js'), "utf-8");
 
 module.exports = function (argv) {
-    console.log(argv);
+    
     if (argv.editor) {
         prefs.editor = argv.editor
     }
