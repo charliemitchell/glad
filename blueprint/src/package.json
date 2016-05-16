@@ -4,7 +4,7 @@
   "description": "About My Api",
   "author": "",
   "dependencies": {
-    "glad" : "git://github.com/charliemitchell/glad.git#0.7.x",
+    "glad" : "0.7.0",
     "mocha" : "2.2.1",
     "should": "^5.2.0"
   },
