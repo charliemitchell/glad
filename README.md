@@ -21,7 +21,7 @@
 ## Important Note:
 If you are upgrading from less than 0.6.4 to 0.6.4 or higher, there is a few changes that you need to make. Please read the release notes for more information on this. If you skip 0.6.4 and go 0.6.5 or higher, there is no need to worry about the release notes for 0.6.4. Please read notes for 0.6.5 as there is only one line of code you will need to change.
 
-If you ar upgrading an existing app to 0.7.x Please read the release note for 0.7.0 below. Testing has changed in effort to make testing less verbose and making requests to your app should be easier, less verbose, and more sensible. 
+If you are upgrading an existing app to 0.7.x Please read the release note for 0.7.0 below. Testing has changed in effort to make testing less verbose and making requests to your app should be easier, less verbose, and more sensible. 
 Glad now has a file called glad.boot2test.js which is used to launch a server in test mode and set a testing envronment variable available at process.env.test (boolean). Also, the prewritten tests that get generated when you generate API's have changed to reflect this as well.
 
 [Release Notes 0.6.4](https://github.com/charliemitchell/glad/releases/tag/v0.6.4)

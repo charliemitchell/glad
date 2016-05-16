@@ -30,11 +30,5 @@ module.exports = {
         path : '/{{model}}/:id',
         action : 'DELETE',
         policy : 'authenticated'
-    }],
-
-    IO : [{
-        path : '/{{model}}/:id',
-        action : 'realTimeUpdate',
-        policy : 'authenticated'
     }]
 }
