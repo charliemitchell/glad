@@ -7,13 +7,7 @@ var http = require('http');
 module.exports = {
     
     get : function (url, customOptions) {
-        return new bluebird.Promise(function (resolve, reject) {
-            var options = this.requestOptions('GET', url);
-            if (customOptions) {
-                extend(options, customOptions);
-            }
-            http.get(options, resolve).on('error', reject);
-        }.bind(this));
+        return this.__returnPromise(url, customOptions, 'GET');
     },
 
     getJSON : function (url, customOptions) {
@@ -25,7 +19,7 @@ module.exports = {
                 extend(options, customOptions);
             }
              
-            var req = http.get(options, function (res) {
+            http.get(options, function (res) {
                 
                 res.on('data', function (newdata) {
                     data += newdata;
@@ -42,56 +36,39 @@ module.exports = {
     },
 
     post : function (url, data, customOptions) {
-        var options = this.requestOptions('POST', url, data);
-        
-        if (customOptions) {
-            extend(options, customOptions);
-        }
-
-        return new bluebird.Promise(function (resolve, reject) {
-            var req = http.request(options, resolve);
-            req.on('error', reject);
-            if (data) {
-                req.write(data || '{}');
-            }
-            req.end();
-        });
+        return this.__returnPromise(url, customOptions, 'POST', data);
     },
 
     put : function (url, data, customOptions) {
-        var options = this.requestOptions('PUT', url, data);
-        
-        if (customOptions) {
-            extend(options, customOptions);
-        }
-
-        return new bluebird.Promise(function (resolve, reject) {
-            var req = http.request(options, resolve);
-            req.on('error', reject);
-            if (data) {
-                req.write(data || '{}');
-            }
-            req.end();
-        });
+        return this.__returnPromise(url, customOptions, 'PUT', data);
     },
 
     del : function (url, customOptions) {
-        return new bluebird.Promise(function (resolve, reject) {
-            var options = this.requestOptions('DELETE', url);
-            if (customOptions) {
-                extend(options, customOptions);
-            }
-            http.get(options, resolve).on('error', reject);
-        }.bind(this));
+        return this.__returnPromise(url, customOptions, 'DELETE');
     },
 
     head : function (url, customOptions) {
+        return this.__returnPromise(url, customOptions, 'HEAD');
+    },
+
+    __returnPromise : function (url, customOptions, type, data) {
         return new bluebird.Promise(function (resolve, reject) {
-            var options = this.requestOptions('HEAD', url);
+
+            var options = this.requestOptions(type, url, data);
             if (customOptions) {
                 extend(options, customOptions);
             }
-            http.get(options, resolve).on('error', reject);
+            if (['POST', 'PUT'].indexOf(type) > -1) {
+                var req = http.request(options, resolve);
+                req.on('error', reject);
+                if (data) {
+                    req.write(data || '{}');
+                }
+                req.end();
+            } else {
+                http.get(options, resolve).on('error', reject);
+            }
+        
         }.bind(this));
     },
 
@@ -105,6 +82,6 @@ module.exports = {
                 'Content-Type' : 'application/json',
                 'Content-Length' : data ? data.length : 0
             }
-        }
+        };
     }
 };
