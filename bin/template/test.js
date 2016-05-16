@@ -44,7 +44,7 @@ describe('Should Prevent Access if the policy is rejected'.magenta, function() {
             });
         }
 
-        if (router.DELETE)
+        if (router.DELETE) {
             router.DELETE.forEach(function (route) {
                 if (route.policy) {
                     it('should respond with status code 403 on a GET request to the ' + route.path + ' route', function(done) {
