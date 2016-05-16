@@ -132,7 +132,6 @@ else if (argv.p || argv.prefs || argv.preferences || argv.pref || (argv._[0] && 
 
 // If starting the server
 else if (((argv._.length === 0) && (argv['$0'] && argv['$0'] !== 'glad')) || argv.s || argv.server || argv.up || argv.u || (argv._[0] && _.contains(['s', 'server', 'up', 'u'], argv._[0]))) {
-    console.log(argv);
     var interactive = (argv.i || argv.interactive || (argv._[1] && _.contains(['i', 'interactive'], argv._[1])));
     require(process.cwd() + '/node_modules/glad/service')(config, {
         interactive : interactive
