@@ -1,2 +1,2 @@
 tests/*.js
---require glad.boot-2-test.js
+--require glad.boot2test.js
