@@ -6,6 +6,7 @@
  */
 
 var {{model_cap}} = require('./../models/{{model}}');
+var glad = require('glad');
 
 function onError (res, err) {
     res.status(500).json({
@@ -65,21 +66,11 @@ module.exports = {
             if (err) {
                 onError(res, err);
             } else {
-                var path = req.params['0'].split('/'),
-                    scaffold = {{model}};
-
-                for (var i=0, len=path.length; i < len; i +=1) {
-                    if (scaffold[path[i]] === undefined ) {
-                        res.status(404).json({
-                            error : "The path " + path[i] + " does Not Exist on the resource " + ((i-1 === -1) ? " {{model}} " : (path[i-1]))
-                        })
-                        return;
-                    } else {
-                        scaffold = scaffold[path[i]];
-                    }
-                }
-
-                res.status(200).json(scaffold);
+                var path = req.params['0'].replace(/\//g, '.'),
+                    scaffold = glad.dotObject.pick(path, {{model}});
+                res.status(scaffold ? 200 : 404).json(scaffold || {
+                    error : "The path " + path + " does not exist on this document"
+                });
             }
         });
     },
