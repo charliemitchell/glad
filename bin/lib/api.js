@@ -121,7 +121,7 @@ var path = require('path'),
             copy(blueprint, cwd, function(err) {
 
                 fs.writeFileSync('./src/models/' + model + '.js', fs.readFileSync(join(template, 'model.js'), 'utf-8').replace(/{{model}}/g, model));
-                fs.writeFileSync('./src/routes/' + model + '.js', fs.readFileSync(join(template, 'route.js'), 'utf-8').replace(/{{api}}/g, model));
+                fs.writeFileSync('./src/routes/' + model + '.js', fs.readFileSync(join(template, 'route.js'), 'utf-8').replace(/{{model}}/g, model));
                 fs.writeFileSync('./src/controllers/' + model + '.js', fs.readFileSync(join(template, 'controller.js'), 'utf-8').replace(/{{model}}/g, model).replace(/{{model_cap}}/g, model_cap));
                 fs.writeFileSync('./src/tests/' + model + '.js', fs.readFileSync(join(template, 'test.js'), 'utf-8').replace(/{{model}}/g, model));
 
