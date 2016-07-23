@@ -5,8 +5,7 @@
   "description": "A robust Node Js API framework to effortlessly generate REST API's.",
   "author": "Charlie Mitchell <charliesemailis@gmail.com>",
   "license": "MIT",
-  "keywords" : [ "glad", "glad api", "glad js", "express", "api", "apis", "framework", "api only", "mongoose", "express", "api framework", "node api", "REST", "rest generator", "blueprint", "scaffold", "Restful"],
-
+  "keywords" : [ "api framework", "rest api framework", "restful api framework", "glad", "glad api", "glad js", "api only", "rest", "api"],
   "bugs": {
     "url": "http://github.com/charliemitchell/glad",
     "email": "charliesemailis@gmail.com"
