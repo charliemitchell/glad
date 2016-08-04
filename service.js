@@ -4,7 +4,8 @@ require('colors');
 var initialize_hook = require('./boot/initialize_hook'),
     express = require("express"),
     app = express(),
-    server = require('http').Server(app);
+    server = require('http').Server(app),
+    replHistory = require('repl.history');
 
 module.exports = function (callback, conf) {
     initialize_hook(server, app, express, function () {
@@ -249,7 +250,7 @@ function after_init_hook (callback, conf) {
                                                     setTimeout(function () {
                                                         console.log("Application will now run in interactive mode".green);
                                                         var repl = require("repl");
-                                                        repl.start("Glad > ".yellow);
+                                                        replHistory(repl.start("Glad > ".yellow), path.join(process.cwd(), '.glad_history'));
                                                     }, 1000);
                                                 }
 
