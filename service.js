@@ -248,7 +248,8 @@ function after_init_hook (callback, conf) {
 
                                                 if (config.interactive) {
                                                     setTimeout(function () {
-                                                        console.log("Application will now run in interactive mode".green);
+                                                        console.log(" Application will now run in interactive mode".green);
+                                                        console.log(' (ctrl + c) twice to exit interactive mode, then once more to quit the application\n'.grey)
                                                         var repl = require("repl");
                                                         replHistory(repl.start("Glad > ".yellow), path.join(process.cwd(), '.glad_history'));
                                                     }, 1000);
