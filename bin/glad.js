@@ -41,7 +41,7 @@ function help() {
     process.exit(0);
 }
 // IF Running `glad -h`
-if (argv.h || argv.help || (argv._[0] && _.contains(['h', 'help'], argv._[0]))) {
+if (argv.h || argv.help || (argv._[0] && _.includes(['h', 'help'], argv._[0]))) {
   help();
 }
 
@@ -49,22 +49,22 @@ if (argv.h || argv.help || (argv._[0] && _.contains(['h', 'help'], argv._[0]))) 
 var version = JSON.parse(fs.readFileSync(path.join((__dirname).replace('bin', ""), '/package.json'))).version;
 
 // IF Running `glad -v`
-if (argv.v || argv.version || (argv._[0] && _.contains(['v', 'version'], argv._[0]))) {
+if (argv.v || argv.version || (argv._[0] && _.includes(['v', 'version'], argv._[0]))) {
     console.log('v' + version);
     process.exit(0);
 }
 
 // IF Running `glad list`
-else if (argv.l || argv.list || (argv._[0] && _.contains(['l', 'list'], argv._[0]))) {
+else if (argv.l || argv.list || (argv._[0] && _.includes(['l', 'list'], argv._[0]))) {
     var files_path = process.cwd() + '/controllers',
         files = fs.readdirSync(files_path),
         mode = "Controllers";
 
     if (argv._[1]) {
-        if (_.contains(['m', 'model', 'models'], argv._[1])) {
+        if (_.includes(['m', 'model', 'models'], argv._[1])) {
             files_path = process.cwd() + '/models';
             mode = "Models";
-        } else if (_.contains(['r', 'route', 'routes'], argv._[1])) {
+        } else if (_.includes(['r', 'route', 'routes'], argv._[1])) {
             files_path = process.cwd() + '/routes';
             mode = "Routes"
         }
@@ -82,8 +82,8 @@ else if (argv.l || argv.list || (argv._[0] && _.contains(['l', 'list'], argv._[0
 
 
 // Glad Run
-else if (argv.r || argv.run || (argv._[0] && _.contains(['r', 'run'], argv._[0]))) {
-  var interactive = (argv.i || argv.interactive || (argv._[2] && _.contains(['i', 'interactive'], argv._[2])));
+else if (argv.r || argv.run || (argv._[0] && _.includes(['r', 'run'], argv._[0]))) {
+  var interactive = (argv.i || argv.interactive || (argv._[2] && _.includes(['i', 'interactive'], argv._[2])));
   process.glad.run = true;
   process.glad.aux = true;
 
@@ -110,7 +110,7 @@ else if (argv.r || argv.run || (argv._[0] && _.contains(['r', 'run'], argv._[0])
 }
 
 // Glad Console
-else if (argv.c || argv.console || (argv._[0] && _.contains(['c', 'console'], argv._[0]))) {
+else if (argv.c || argv.console || (argv._[0] && _.includes(['c', 'console'], argv._[0]))) {
     process.glad.console = true;
     process.glad.aux = true;
     try {
@@ -125,14 +125,14 @@ else if (argv.c || argv.console || (argv._[0] && _.contains(['c', 'console'], ar
 }
 
 // If setting preferences
-else if (argv.p || argv.prefs || argv.preferences || argv.pref || (argv._[0] && _.contains(['p', 'prefs', 'preferences', 'pref'], argv._[0]))) {
+else if (argv.p || argv.prefs || argv.preferences || argv.pref || (argv._[0] && _.includes(['p', 'prefs', 'preferences', 'pref'], argv._[0]))) {
     prefs(argv);
     process.exit(0);
 }
 
 // If starting the server
-else if (((argv._.length === 0) && (argv['$0'] && argv['$0'] !== 'glad')) || argv.s || argv.server || argv.up || argv.u || (argv._[0] && _.contains(['s', 'server', 'up', 'u'], argv._[0]))) {
-    var interactive = (argv.i || argv.interactive || (argv._[1] && _.contains(['i', 'interactive'], argv._[1])));
+else if (((argv._.length === 0) && (argv['$0'] && argv['$0'] !== 'glad')) || argv.s || argv.server || argv.up || argv.u || (argv._[0] && _.includes(['s', 'server', 'up', 'u'], argv._[0]))) {
+    var interactive = (argv.i || argv.interactive || (argv._[1] && _.includes(['i', 'interactive'], argv._[1])));
     require(process.cwd() + '/node_modules/glad/service')(config, {
         interactive : interactive
     });
@@ -146,17 +146,17 @@ else if (argv._.length === 0) {
 }
 
 // If Creating an API
-else if (argv.a || argv.api || (argv._[0] && _.contains(['a', 'api'], argv._[0]))) {
+else if (argv.a || argv.api || (argv._[0] && _.includes(['a', 'api'], argv._[0]))) {
     api(argv);
 }
 
 // If Destroying an API
-else if (argv.d || argv.destroy || (argv._[0] && _.contains(['d', 'destroy'], argv._[0]))) {
+else if (argv.d || argv.destroy || (argv._[0] && _.includes(['d', 'destroy'], argv._[0]))) {
     api(argv, true);
 }
 
 // If Creating a new directory
-else if (argv.new || argv.n || (argv._[0] && _.contains(['n', 'new'], argv._[0]))) {
+else if (argv.new || argv.n || (argv._[0] && _.includes(['n', 'new'], argv._[0]))) {
     if (argv._[1]) {
         var folder = path.join(process.cwd(), argv._[1]);
         fs.mkdirSync(folder);
@@ -166,7 +166,7 @@ else if (argv.new || argv.n || (argv._[0] && _.contains(['n', 'new'], argv._[0])
 }
 
 // If running init
-else if (argv.init || argv.i ||(argv._[0] && _.contains(['i', 'init'], argv._[0]))) {
+else if (argv.init || argv.i ||(argv._[0] && _.includes(['i', 'init'], argv._[0]))) {
     var cwd = process.cwd(),
         package_path = path.join(cwd, 'src', 'package.json');
     if (fs.existsSync(package_path)) {
@@ -221,8 +221,8 @@ else if (argv.init || argv.i ||(argv._[0] && _.contains(['i', 'init'], argv._[0]
 }
 
 // If Running The Set Command
-else if (argv.set || (argv._[0] && _.contains(['set'], argv._[0]))) {
-    if (argv.port || (argv._[1] && _.contains(['port'], argv._[1]))) {
+else if (argv.set || (argv._[0] && _.includes(['set'], argv._[0]))) {
+    if (argv.port || (argv._[1] && _.includes(['port'], argv._[1]))) {
         var config,
             Dockerfile;
 
@@ -261,7 +261,7 @@ else if (argv.set || (argv._[0] && _.contains(['set'], argv._[0]))) {
 }
 
 // If running the stub command
-else if (argv.stub || (argv._[0] && _.contains(['stub'], argv._[0]))) {
+else if (argv.stub || (argv._[0] && _.includes(['stub'], argv._[0]))) {
     //console.log("Coming Soon");
      (function() {
          var pathToStub = argv._[1],
