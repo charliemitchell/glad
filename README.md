@@ -1,15 +1,22 @@
-<div style="width:100%; text-align:center; background-color:#F5BE0B;">
-<img align="center" src="/media/glad_small.jpg" alt="glad">
-</div>
+# Moved
+This project has moved to [gladjs on github](https://github.com/gladjs/glad) 
 
-# Glad
-[![Code Climate](https://codeclimate.com/github/charliemitchell/glad/badges/gpa.svg)](https://codeclimate.com/github/charliemitchell/glad)
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 
+## Leaving the old documentation and repo here for version < 1.0.0 folks
 
-[![NPM](https://nodei.co/npm/glad.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/glad/)
-
-
-* [Glad JS Website](http://gladjs.com/)
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 
 ## Required
 * [Node.js](http://nodejs.org/) (with NPM)
@@ -885,9 +892,3 @@ For example, your plugin config may look something like this.
        }
      }
 ```
-
-
-## Links
-This repository is available at [github](https://www.github.com/charliemitchell/glad) 
-
-The Glad JS Website is at [gladjs.com](http://www.gladjs.com)
